@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 class UserSeeder extends Seeder
@@ -19,9 +20,9 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Admin',
             'admin' => 1,
-            'email' => 'admin@cfrancisart.com',
+            'email' => 'admin@constituencyproject.org',
             'username' => 'admin',
-            'password' => bcrypt('password')
+            'password' => Hash::make('password')
         ]);
     }
 }

@@ -1,0 +1,25 @@
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Ensure modal dialogs are full width on mobile */
+@media (max-width: 768px) {
+    .modal-dialog {
+        max-width: 95%;
+        margin: 1.75rem auto;
+    }
+}
+
+/* Wrap status badges for smaller screens */
+.badge {
+    white-space: normal;
+}
+
+/* Adjust buttons to stack vertically on narrow screens */
+@media (max-width: 576px) {
+    td .btn {
+        display: block;
+        margin-bottom: 5px;
+        width: 100%;
+    }
+}

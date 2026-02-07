@@ -1,9 +1,6 @@
 @charset "UTF-8";
 
-/*--------------------------------------------------------------
-# Font & Color Variables
-# Help: https://constituencyproject.com/color-system/
---------------------------------------------------------------*/
+
 /* Fonts */
 :root {
   --default-font: "Roboto",  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -19,6 +16,7 @@
   --accent-color: #29a221; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
   --surface-color: #ffffff; /* The surface color is used as a background of boxed elements within sections, such as cards, icon boxes, or other elements that require a visual separation from the global background. */
   --contrast-color: #ffffff; /* Contrast color for text, ensuring readability against backgrounds of accent, heading, or default colors. */
+   --secondary-color: #ffc107 /* This color goes with the var(--accent-color) as the secondary color of the website and project */
 }
 
 /* Nav Menu Colors - The following color variables are used specifically for the navigation menu. They are separate from the global colors to allow for more customization options */
@@ -132,6 +130,99 @@ h6 {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.portfolio-card {
+  display: block;
+  height: 100%;
+  background: var(--surface-color);
+  border-radius: 16px;
+  padding: 28px;
+  text-decoration: none;
+  color: var(--default-color);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.portfolio-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(41,162,33,0.08),
+    rgba(255,193,7,0.12)
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.portfolio-card:hover::before {
+  opacity: 1;
+}
+
+.portfolio-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.badge {
+  background: var(--accent-color);
+  color: var(--contrast-color);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.stars i {
+  color: var(--secondary-color);
+  font-size: 14px;
+}
+
+.portfolio-card h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--heading-color);
+  margin-bottom: 6px;
+}
+
+.role {
+  font-size: 14px;
+  color: var(--accent-color);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.excerpt {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.card-footer i {
+  transition: transform 0.3s ease;
+}
+
+.portfolio-card:hover .card-footer i {
+  transform: translateX(6px);
 }
 
 /*--------------------------------------------------------------
@@ -534,6 +625,56 @@ h6 {
 .footer .credits {
   margin-top: 6px;
   font-size: 13px;
+}
+.footer .footer-top {
+  padding-top: 50px;
+  border-top: 1px solid color-mix(in srgb, var(--contrast-color), transparent 30%);
+}
+
+.footer h4 {
+  font-size: 18px;
+  font-weight: 500;
+  padding-bottom: 12px;
+}
+
+.footer a {
+  color: color-mix(in srgb, var(--contrast-color), transparent 70%);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.footer a:hover {
+  color: var(--accent-color);
+}
+
+.footer .social-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--secondary-color);
+  font-size: 16px;
+  color: var(--secondary-color);
+  transition: all 0.3s ease;
+}
+
+.footer .social-links a:hover {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--contrast-color);
+  transform: translateY(-2px);
+}
+
+.footer .footer-links ul li a:hover {
+  color: var(--secondary-color);
+}
+
+.footer .copyright {
+  padding-top: 25px;
+  padding-bottom: 25px;
+  background-color: color-mix(in srgb, var(--contrast-color), transparent 95%);
 }
 
 /*--------------------------------------------------------------
@@ -1087,7 +1228,7 @@ section,
   background-color: transparent;
   color: var(--heading-color);
   text-decoration: none;
-  border: 2px solid color-mix(in srgb, var(--default-color), transparent 80%);
+  border: 2px solid color-mix(in srgb, var(--accent-color), transparent 80%);
   border-radius: 6px;
   font-weight: 500;
   transition: all 0.3s ease;
@@ -1176,6 +1317,64 @@ section,
     justify-content: center;
   }
 }
+/* ---------------------------------
+   About section – hierarchy fix
+---------------------------------- */
+
+/* Visually demote inner heading */
+.about .content h2 {
+  font-weight: 400; /* was 300, still elegant but less dominant */
+  color: color-mix(in srgb, var(--heading-color), var(--default-color) 25%);
+  position: relative;
+  padding-left: 18px;
+}
+
+/* Accent marker (green → gold) */
+.about .content h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 4px;
+  height: 70%;
+  background: linear-gradient(
+    to bottom,
+    var(--accent-color),
+    var(--secondary-color)
+  );
+  border-radius: 2px;
+}
+
+/* Gold emphasis under lead */
+.about .content .lead {
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.about .content .lead::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 72px;
+  height: 3px;
+  background-color: var(--secondary-color);
+  border-radius: 2px;
+}
+
+/* Floating card – introduce secondary accent */
+.about .image-wrapper .floating-card {
+  border-top: 4px solid var(--secondary-color);
+}
+
+.about .image-wrapper .floating-card .icon {
+  background-color: color-mix(in srgb, var(--secondary-color), transparent 88%);
+}
+
+.about .image-wrapper .floating-card .icon i {
+  color: var(--secondary-color);
+}
+
 
 /*--------------------------------------------------------------
 # Services Section
@@ -1306,9 +1505,120 @@ section,
   }
 }
 
+/* ---------------------------------
+   Services section background
+---------------------------------- */
+.services {
+  background-color: #f9f9f9 !important;
+}
+
+/* Secondary accent introduced subtly */
+.services .service-item::before {
+  background: linear-gradient(
+    90deg,
+    var(--accent-color),
+    var(--secondary-color)
+  );
+}
+
+/* Hover polish using gold */
+.services .service-item:hover .service-icon {
+  background: linear-gradient(
+    135deg,
+    var(--secondary-color),
+    color-mix(in srgb, var(--secondary-color), var(--heading-color) 20%)
+  );
+}
+
+.services .service-item:hover .service-link {
+  color: var(--secondary-color);
+}
+
+
 /*--------------------------------------------------------------
 # Why Us Section
 --------------------------------------------------------------*/
+
+.why-anchor {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+}
+
+.why-anchor img {
+  width: 100%;
+  transition: transform 0.6s ease;
+}
+
+.why-anchor:hover img {
+  transform: scale(1.05);
+}
+
+.anchor-badge {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: var(--accent-color);
+  color: var(--contrast-color);
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.25),
+    0 0 0 3px rgba(255,193,7,0.35); /* secondary ring */
+}
+
+.anchor-badge i {
+  color: var(--secondary-color);
+}
+
+.principle {
+  display: flex;
+  gap: 20px;
+  padding: 22px;
+  border-radius: 14px;
+  transition: all 0.4s ease;
+}
+
+.principle i {
+  font-size: 26px;
+  color: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.principle h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.principle p {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.principle:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(41,162,33,0.06),
+    rgba(255,193,7,0.12)
+  );
+  transform: translateX(6px);
+}
+
+.principle:hover h3 {
+  color: var(--accent-color);
+}
+
+.principle:hover i {
+  color: var(--secondary-color);
+}
+
+
 .why-us {
   padding: 100px 0;
 }
@@ -1769,6 +2079,86 @@ section,
 .portfolio .portfolio-conclusion .conclusion-content .conclusion-actions .secondary-action:hover::after {
   width: 100%;
 }
+
+/* Featured Portfolios Section */
+.portfolios {
+  background-color: #f9f9f9;
+  padding-top: 120px;
+  padding-bottom: 120px;
+}
+
+.portfolio-card {
+  display: block;
+  background-color: var(--surface-color);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--heading-color);
+}
+
+.portfolio-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px color-mix(in srgb, var(--default-color), transparent 90%);
+}
+
+.portfolio-card .badge {
+  display: inline-block;
+  background-color: var(--secondary-color);
+  color: var(--contrast-color);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.portfolio-card .stars i {
+  color: var(--secondary-color);
+  margin-right: 2px;
+}
+
+.portfolio-card h3 {
+  font-size: 22px;
+  font-weight: 400;
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+
+.portfolio-card .role {
+  font-size: 14px;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--default-color), transparent 40%);
+  margin-bottom: 12px;
+}
+
+.portfolio-card .excerpt {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  color: color-mix(in srgb, var(--default-color), transparent 25%);
+}
+
+.portfolio-card .card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 500;
+  color: var(--accent-color);
+  font-size: 14px;
+}
+
+.portfolio-card .card-footer i {
+  transition: transform 0.3s ease;
+}
+
+.portfolio-card:hover .card-footer i {
+  transform: translateX(6px);
+}
+
 
 /*--------------------------------------------------------------
 # Team Section
@@ -2435,7 +2825,49 @@ section,
   .contact .modern-form .form-group {
     margin-bottom: 24px;
   }
+
 }
+
+/* Contact Section */
+.contact {
+  background-color: #f9f9f9;
+  padding-top: 120px;
+  padding-bottom: 120px;
+}
+
+.contact .info-icon {
+  background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+  color: var(--contrast-color);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.contact .detail-icon {
+  color: var(--secondary-color);
+}
+
+.contact .submit-btn {
+  background: var(--accent-color);
+  color: var(--contrast-color);
+  border-radius: 6px;
+  padding: 16px 32px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.contact .submit-btn:hover {
+  background: var(--secondary-color);
+  transform: translateY(-2px);
+}
+
 
 /*--------------------------------------------------------------
 # Portfolio Details Section

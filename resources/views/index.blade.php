@@ -70,7 +70,7 @@
           </h1>
 
           <p data-aos="fade-up" data-aos-delay="300">
-            What did you do when you were there? Constituency Project Ltd transforms promises into
+            What did you do when you were there? Constituency Project  transforms promises into
             verifiable projects, measurable impact, and a legacy that speaks for itself.
           </p>
 
@@ -143,7 +143,7 @@
 
   <div class="container section-title" data-aos="fade-up">
     <span class="subtitle">Who We Are</span>
-    <h2>About Constituency Project Ltd</h2>
+    <h2>About Constituency Project </h2>
     <p>
       We are a public-impact and governance support company dedicated to turning constituency
       projects into visible, verifiable, and lasting legacy.
@@ -240,7 +240,7 @@
     <span class="subtitle">What We Showcase</span>
     <h2>Inside Every Public Portfolio</h2>
     <p>
-      Each personality featured on Constituency Project Ltd has a dedicated
+      Each personality featured on Constituency Project  has a dedicated
       public portfolio that documents their projects, impact, and service
       record in a clear, verifiable, and accessible format.
     </p>
@@ -359,110 +359,87 @@
 </section><!-- /Services Section -->
 
 
-  <!-- Why Us Section -->
-<section id="why-us" class="why-us section">
+<div class="container section-title" data-aos="fade-up">
+  <span class="subtitle">Why We Exist</span>
+  <h2>Because Public Work Should Be Publicly Proven</h2>
+  <p>
+    Constituency Project  is built to make public service measurable,
+    discoverable, and permanently accountable — without spin or sentiment.
+  </p>
+</div>
+<div class="container">
 
-  <div class="container section-title" data-aos="fade-up">
-    <span class="subtitle">Why This Platform</span>
-    <h2>Why Constituency Project Ltd</h2>
-    <p>
-      Public service deserves clarity, evidence, and accessibility. We provide
-      a neutral platform where performance can be seen, reviewed, and trusted.
-    </p>
-  </div>
+  <div class="row align-items-center g-5">
 
-  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <!-- CENTER ANCHOR -->
+    <div class="col-lg-5" data-aos="fade-right">
+      <div class="why-anchor">
 
-    <div class="row">
-      <div class="col-lg-6" data-aos="fade-right" data-aos-delay="200">
-        <div class="content">
-          <h2>Built for Transparency & Public Trust</h2>
+        <img src="{{ asset('fe/assets/img/about/local_meet.jpeg') }}"
+             alt="Documented public engagement"
+             class="img-fluid">
+
+        <div class="anchor-badge">
+          <i class="bi bi-shield-check"></i>
+          <span>Neutral Documentation Platform</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PRINCIPLES -->
+    <div class="col-lg-7">
+
+      <div class="principle" data-aos="fade-up">
+        <i class="bi bi-eye-fill"></i>
+        <div>
+          <h3>Visibility by Default</h3>
           <p>
-            Constituency Project Ltd exists to close the gap between public
-            service and public perception by making project delivery visible,
-            searchable, and verifiable in one place.
+            Every documented project is open to citizens, media, partners,
+            and institutions — not hidden behind narratives or gatekeepers.
           </p>
         </div>
       </div>
 
-      <div class="col-lg-6" data-aos="fade-left" data-aos-delay="300">
-        <div class="image-wrapper">
-          <img src="assets/img/about/about-8.webp"
-               alt="Public project documentation"
-               class="img-fluid why-img-hover">
+      <div class="principle" data-aos="fade-up" data-aos-delay="100">
+        <i class="bi bi-shield-check"></i>
+        <div>
+          <h3>Evidence Over Claims</h3>
+          <p>
+            We publish timelines, visuals, and outcomes so impact can be
+            assessed — not assumed.
+          </p>
         </div>
       </div>
-    </div>
 
-    <div class="features-grid" data-aos="fade-up" data-aos-delay="400">
-      <div class="row g-5">
-
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-          <div class="feature-item">
-            <div class="icon-wrapper">
-              <i class="bi bi-eye-fill"></i>
-            </div>
-            <div class="feature-content">
-              <h3>Public Visibility</h3>
-              <p>
-                Every personality has a dedicated page accessible to citizens,
-                partners, media, and stakeholders worldwide.
-              </p>
-            </div>
-          </div>
+      <div class="principle" data-aos="fade-up" data-aos-delay="200">
+        <i class="bi bi-search"></i>
+        <div>
+          <h3>Accessible by Design</h3>
+          <p>
+            Anyone can search, review, and compare public portfolios without
+            registration, permissions, or bias.
+          </p>
         </div>
-
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-          <div class="feature-item">
-            <div class="icon-wrapper">
-              <i class="bi bi-shield-check"></i>
-            </div>
-            <div class="feature-content">
-              <h3>Verified Evidence</h3>
-              <p>
-                Projects are supported with photos, videos, timelines, and
-                impact data—moving beyond claims to proof.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
-          <div class="feature-item">
-            <div class="icon-wrapper">
-              <i class="bi bi-search"></i>
-            </div>
-            <div class="feature-content">
-              <h3>Easy Discovery</h3>
-              <p>
-                Users can browse or search personalities and review their
-                portfolios without barriers or gatekeeping.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
-          <div class="feature-item">
-            <div class="icon-wrapper">
-              <i class="bi bi-archive-fill"></i>
-            </div>
-            <div class="feature-content">
-              <h3>Permanent Record</h3>
-              <p>
-                Work done in office is preserved beyond tenure—creating a
-                lasting digital legacy that endures.
-              </p>
-            </div>
-          </div>
-        </div>
-
       </div>
+
+      <div class="principle" data-aos="fade-up" data-aos-delay="300">
+        <i class="bi bi-archive-fill"></i>
+        <div>
+          <h3>Legacy That Outlives Office</h3>
+          <p>
+            Public work should not disappear with tenure. We preserve it as
+            a permanent civic record.
+          </p>
+        </div>
+      </div>
+
     </div>
 
   </div>
 
-</section><!-- /Why Us Section -->
+</div>
+
 
 <!-- Personalities Section -->
 <section id="personalities" class="portfolio section">
@@ -496,10 +473,10 @@
             <div class="row g-4">
               <div class="col-md-6">
                 <div class="project-visual">
-                  <img src="assets/img/portfolio/portfolio-1.webp" alt="Fela Durotoye" class="img-fluid" loading="lazy">
+                  <img src="{{asset('fe/assets/img/person/fela_durotoye.png')}}" alt="Fela Durotoye" class="img-fluid" loading="lazy">
                   <div class="project-overlay">
                     <div class="overlay-content">
-                      <a href="assets/img/portfolio/portfolio-1.webp" class="view-project glightbox" aria-label="View image">
+                      <a href="{{asset('fe/assets/img/person/fela_durotoye.png')}}" class="view-project glightbox" aria-label="View image">
                         <i class="bi bi-eye"></i>
                       </a>
                       <a href="/fela-durotoye" class="project-link" aria-label="View portfolio">
@@ -567,7 +544,7 @@
 </section>
 <!-- /Personalities Section -->
 
-    <!-- Team Section -->
+    {{-- <!-- Team Section -->
     <section id="team" class="team section">
 
       <!-- Section Title -->
@@ -657,363 +634,231 @@
 
       </div>
 
-    </section><!-- /Team Section -->
+    </section><!-- /Team Section --> --}}
 
-    <!-- Testimonials Section -->
-    <section id="testimonials" class="testimonials section">
+<section id="featured-portfolios" class="portfolios section" style="background-color: #f9f9f9;">
 
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <span class="subtitle">Testimonials</span>
-        <h2>What They Say</h2>
-        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam rem aperiam</p>
-      </div><!-- End Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <span class="subtitle">Featured Portfolios</span>
+    <h2>Public Impact, Documented</h2>
+    <p>
+      A curated selection of leaders whose constituency projects and public
+      interventions have been independently documented, verified, and archived.
+    </p>
+  </div>
 
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
+  <div class="container">
+    <div class="row g-4">
 
-        <div class="testimonial-slider swiper init-swiper">
-          <script type="application/json" class="swiper-config">
-            {
-              "loop": true,
-              "speed": 600,
-              "autoplay": {
-                "delay": 4000
-              },
-              "slidesPerView": 1,
-              "spaceBetween": 30,
-              "navigation": {
-                "nextEl": ".swiper-button-next",
-                "prevEl": ".swiper-button-prev"
-              },
-              "breakpoints": {
-                "768": {
-                  "slidesPerView": 2
-                },
-                "1200": {
-                  "slidesPerView": 3
-                }
-              }
-            }
-          </script>
+      <!-- Portfolio Card -->
+      <div class="col-lg-4 col-md-6">
+        <a href="/personalities/fela-durotoye" class="portfolio-card" data-aos="fade-up">
 
-          <div class="swiper-wrapper">
-
-            <!-- Testimonial Slide 1 -->
-            <div class="swiper-slide">
-              <div class="testimonial-item" data-aos="zoom-in" data-aos-delay="200">
-                <div class="testimonial-header">
-                  <img src="assets/img/person/person-f-12.webp" alt="Client" class="img-fluid" loading="lazy">
-                  <div class="rating">
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                  </div>
-                </div>
-                <div class="testimonial-body">
-                  <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit sed eiusmod tempor.</p>
-                </div>
-                <div class="testimonial-footer">
-                  <h5>Jessica Martinez</h5>
-                  <span>UX Designer</span>
-                  <div class="quote-icon">
-                    <i class="bi bi-chat-quote-fill"></i>
-                  </div>
-                </div>
-              </div>
-            </div><!-- End Testimonial Slide -->
-
-            <!-- Testimonial Slide 2 -->
-            <div class="swiper-slide">
-              <div class="testimonial-item" data-aos="zoom-in" data-aos-delay="300">
-                <div class="testimonial-header">
-                  <img src="assets/img/person/person-m-8.webp" alt="Client" class="img-fluid" loading="lazy">
-                  <div class="rating">
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                  </div>
-                </div>
-                <div class="testimonial-body">
-                  <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa.</p>
-                </div>
-                <div class="testimonial-footer">
-                  <h5>David Rodriguez</h5>
-                  <span>Software Engineer</span>
-                  <div class="quote-icon">
-                    <i class="bi bi-chat-quote-fill"></i>
-                  </div>
-                </div>
-              </div>
-            </div><!-- End Testimonial Slide -->
-
-            <!-- Testimonial Slide 3 -->
-            <div class="swiper-slide">
-              <div class="testimonial-item" data-aos="zoom-in" data-aos-delay="400">
-                <div class="testimonial-header">
-                  <img src="assets/img/person/person-f-6.webp" alt="Client" class="img-fluid" loading="lazy">
-                  <div class="rating">
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                  </div>
-                </div>
-                <div class="testimonial-body">
-                  <p>Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud.</p>
-                </div>
-                <div class="testimonial-footer">
-                  <h5>Amanda Wilson</h5>
-                  <span>Creative Director</span>
-                  <div class="quote-icon">
-                    <i class="bi bi-chat-quote-fill"></i>
-                  </div>
-                </div>
-              </div>
-            </div><!-- End Testimonial Slide -->
-
-            <!-- Testimonial Slide 4 -->
-            <div class="swiper-slide">
-              <div class="testimonial-item" data-aos="zoom-in" data-aos-delay="500">
-                <div class="testimonial-header">
-                  <img src="assets/img/person/person-m-12.webp" alt="Client" class="img-fluid" loading="lazy">
-                  <div class="rating">
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                  </div>
-                </div>
-                <div class="testimonial-body">
-                  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam rem aperiam eaque ipsa quae ab illo inventore veritatis.</p>
-                </div>
-                <div class="testimonial-footer">
-                  <h5>Ryan Thompson</h5>
-                  <span>Business Analyst</span>
-                  <div class="quote-icon">
-                    <i class="bi bi-chat-quote-fill"></i>
-                  </div>
-                </div>
-              </div>
-            </div><!-- End Testimonial Slide -->
-
-            <!-- Testimonial Slide 5 -->
-            <div class="swiper-slide">
-              <div class="testimonial-item" data-aos="zoom-in" data-aos-delay="600">
-                <div class="testimonial-header">
-                  <img src="assets/img/person/person-f-10.webp" alt="Client" class="img-fluid" loading="lazy">
-                  <div class="rating">
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                  </div>
-                </div>
-                <div class="testimonial-body">
-                  <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi.</p>
-                </div>
-                <div class="testimonial-footer">
-                  <h5>Rachel Chen</h5>
-                  <span>Project Manager</span>
-                  <div class="quote-icon">
-                    <i class="bi bi-chat-quote-fill"></i>
-                  </div>
-                </div>
-              </div>
-            </div><!-- End Testimonial Slide -->
-
+          <div class="card-top">
+            <span class="badge">Verified Portfolio</span>
+            <div class="stars">
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+            </div>
           </div>
 
-          <div class="swiper-navigation">
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
+          <h3>Fela Durotoye</h3>
+          <p class="role">Public Leadership & Civic Reform</p>
+
+          <p class="excerpt">
+            Documented constituency engagements, leadership programmes,
+            youth capacity development, and civic accountability initiatives.
+          </p>
+
+          <div class="card-footer">
+            <span>View Full Portfolio</span>
+            <i class="bi bi-arrow-right"></i>
           </div>
 
-        </div>
-
+        </a>
       </div>
 
-    </section><!-- /Testimonials Section -->
+      <!-- Duplicate for other leaders -->
+    </div>
+  </div>
+</section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact section light-background">
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <span class="subtitle">Contact</span>
-        <h2>Let's Connect</h2>
-        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam rem aperiam</p>
-      </div><!-- End Section Title -->
+<section id="contact" class="contact section" style="background-color: #f9f9f9;">
 
-      <div class="container">
-        <div class="row gy-4">
-          <div class="col-lg-5">
+  <div class="container section-title" data-aos="fade-up">
+    <span class="subtitle">Contact</span>
+    <h2>Let's Connect</h2>
+    <p>We're ready to discuss your vision and show how public impact can be documented effectively.</p>
+  </div>
 
-            <div class="info-item">
-              <div class="info-icon">
-                <i class="bi bi-chat-dots"></i>
-              </div>
-              <div class="info-content">
-                <h4>Let's Connect</h4>
-                <p>We're here to discuss your vision and explore how we can bring it to life together.</p>
-              </div>
-            </div>
+  <div class="container">
+    <div class="row gy-4">
 
-            <div class="contact-details">
-
-              <div class="detail-item">
-                <div class="detail-icon">
-                  <i class="bi bi-envelope-open"></i>
-                </div>
-                <div class="detail-content">
-                  <span class="detail-label">Email us</span>
-                  <span class="detail-value">contact@example.com</span>
-                </div>
-              </div>
-
-              <div class="detail-item">
-                <div class="detail-icon">
-                  <i class="bi bi-telephone-outbound"></i>
-                </div>
-                <div class="detail-content">
-                  <span class="detail-label">Call us</span>
-                  <span class="detail-value">+1 (555) 432-8976</span>
-                </div>
-              </div>
-
-              <div class="detail-item">
-                <div class="detail-icon">
-                  <i class="bi bi-geo-alt-fill"></i>
-                </div>
-                <div class="detail-content">
-                  <span class="detail-label">Visit us</span>
-                  <span class="detail-value">547 Madison Avenue<br>New York, NY 10022</span>
-                </div>
-              </div>
-
-            </div>
-
+      <div class="col-lg-5">
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="bi bi-chat-dots"></i>
           </div>
-
-          <div class="col-lg-7">
-            <div class="form-wrapper">
-              <div class="form-header">
-                <h3>Send us a message</h3>
-              </div>
-
-              <form action="forms/contact.php" method="post" class="php-email-form">
-
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label>Full Name</label>
-                      <input type="text" name="name" required="">
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label>Email Address</label>
-                      <input type="email" name="email" required="">
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label>Subject</label>
-                  <input type="text" name="subject" required="">
-                </div>
-
-                <div class="form-group">
-                  <label for="projectMessage">Message</label>
-                  <textarea name="message" id="projectMessage" rows="5" required=""></textarea>
-                </div>
-
-                <div class="my-3">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
-                </div>
-
-                <button type="submit" class="submit-btn">
-                  <span>Send Message</span>
-                  <i class="bi bi-arrow-right"></i>
-                </button>
-
-              </form>
-
-            </div>
-
+          <div class="info-content">
+            <h4>Let's Connect</h4>
+            <p>Discuss your vision and explore how we can bring it to life together.</p>
           </div>
+        </div>
 
+        <div class="contact-details">
+          <div class="detail-item">
+            <div class="detail-icon">
+              <i class="bi bi-envelope-open"></i>
+            </div>
+            <div class="detail-content">
+              <span class="detail-label">Email us</span>
+              <span class="detail-value">contact@example.com</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-icon">
+              <i class="bi bi-telephone-outbound"></i>
+            </div>
+            <div class="detail-content">
+              <span class="detail-label">Call us</span>
+              <span class="detail-value">+1 (555) 432-8976</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-icon">
+              <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <div class="detail-content">
+              <span class="detail-label">Visit us</span>
+              <span class="detail-value">547 Madison Avenue<br>FCT, Abuja 10022</span>
+            </div>
+          </div>
         </div>
       </div>
 
-    </section><!-- /Contact Section -->
+      <div class="col-lg-7">
+        <div class="form-wrapper">
+          <div class="form-header">
+            <h3>Send us a message</h3>
+          </div>
+
+          <form action="forms/contact.php" method="post" class="php-email-form">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Full Name</label>
+                  <input type="text" name="name" required="">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Email Address</label>
+                  <input type="email" name="email" required="">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Subject</label>
+              <input type="text" name="subject" required="">
+            </div>
+
+            <div class="form-group">
+              <label for="projectMessage">Message</label>
+              <textarea name="message" id="projectMessage" rows="5" required=""></textarea>
+            </div>
+
+            <div class="my-3">
+              <div class="loading">Loading</div>
+              <div class="error-message"></div>
+              <div class="sent-message">Your message has been sent. Thank you!</div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+              <span>Send Message</span>
+              <i class="bi bi-arrow-right"></i>
+            </button>
+
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
   </main>
 
-  <footer id="footer" class="footer dark-background">
+<footer id="footer" class="footer dark-background">
 
-    <div class="container footer-top">
-      <div class="row gy-4">
-        <div class="col-lg-5 col-md-12 footer-about">
-          <a href="index.html" class="logo d-flex align-items-center">
-            <span class="sitename">constituencyproject</span>
-          </a>
-          <p>Cras fermentum odio eu feugiat lide par naso tierra. Justo eget nada terra videa magna derita valies darta donna mare fermentum iaculis eu non diam phasellus.</p>
-          <div class="social-links d-flex mt-4">
-            <a href=""><i class="bi bi-twitter-x"></i></a>
-            <a href=""><i class="bi bi-facebook"></i></a>
-            <a href=""><i class="bi bi-instagram"></i></a>
-            <a href=""><i class="bi bi-linkedin"></i></a>
-          </div>
+  <div class="container footer-top py-5">
+    <div class="row gy-4">
+
+      <!-- About / Logo -->
+      <div class="col-lg-5 col-md-12 footer-about">
+        <a href="index.html" class="logo d-flex align-items-center mb-3">
+          <span class="sitename" style="color: var(--accent-color); font-weight: 600;">constituencyproject</span>
+        </a>
+        <p style="color: color-mix(in srgb, var(--contrast-color), transparent 70%);">
+          Constituency Project  is a public-impact platform dedicated to making constituency projects visible, verifiable, and preserved as a lasting legacy.
+        </p>
+        <div class="social-links d-flex mt-4 gap-3">
+          <a href="#" class="social-icon" style="border-color: var(--secondary-color); color: var(--secondary-color);"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="social-icon" style="border-color: var(--secondary-color); color: var(--secondary-color);"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-icon" style="border-color: var(--secondary-color); color: var(--secondary-color);"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="social-icon" style="border-color: var(--secondary-color); color: var(--secondary-color);"><i class="bi bi-linkedin"></i></a>
         </div>
-
-        <div class="col-lg-2 col-6 footer-links">
-          <h4>Useful Links</h4>
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About us</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Terms of service</a></li>
-            <li><a href="#">Privacy policy</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-2 col-6 footer-links">
-          <h4>Our Services</h4>
-          <ul>
-            <li><a href="#">Web Design</a></li>
-            <li><a href="#">Web Development</a></li>
-            <li><a href="#">Product Management</a></li>
-            <li><a href="#">Marketing</a></li>
-            <li><a href="#">Graphic Design</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
-          <h4>Contact Us</h4>
-          <p>A108 Adam Street</p>
-          <p>New York, NY 535022</p>
-          <p>United States</p>
-          <p class="mt-4"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
-          <p><strong>Email:</strong> <span>info@example.com</span></p>
-        </div>
-
       </div>
-    </div>
 
-    <div class="container copyright text-center mt-4">
-      <p>© <span>Copyright</span> <strong class="px-1 sitename">constituencyproject</strong> <span>All Rights Reserved</span></p>
-     
-    </div>
+      <!-- Useful Links -->
+      <div class="col-lg-2 col-6 footer-links">
+        <h4 style="color: var(--secondary-color);">Useful Links</h4>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About us</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
 
-  </footer>
+      <!-- Services Links -->
+      <div class="col-lg-2 col-6 footer-links">
+        <h4 style="color: var(--secondary-color);">Our Services</h4>
+        <ul>
+          <li><a href="#">Project Documentation</a></li>
+          <li><a href="#">Monitoring & Evaluation</a></li>
+          <li><a href="#">Media Amplification</a></li>
+          <li><a href="#">Public Impact Reports</a></li>
+          <li><a href="#">Training & Capacity Building</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+        <h4 style="color: var(--secondary-color);">Contact Us</h4>
+        <p>547 Madison Avenue<br>FCT, Abuja 10022<br>Nigeria</p>
+        <p class="mt-3"><strong>Phone:</strong> <span>+234 809 000 1234</span></p>
+        <p><strong>Email:</strong> <span>info@constituencyproject.org</span></p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="container copyright text-center mt-4 py-3">
+    <p style="color: color-mix(in srgb, var(--contrast-color), transparent 60%);">
+      © <span>Copyright</span> 
+      <strong class="px-1 sitename" style="color: var(--accent-color);">Constituency Project </strong> 
+      <span>All Rights Reserved</span>
+    </p>
+  </div>
+
+</footer>
+
 
   <!-- Scroll Top -->
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>

@@ -1,0 +1,1 @@
+<img src="{{ asset('fe/assets/img/logo.png') }}" width="120px" alt="">

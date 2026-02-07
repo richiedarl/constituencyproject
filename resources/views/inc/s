@@ -1,0 +1,248 @@
+<!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
+        <div class="sidebar-brand-icon">
+            <i class="fas fa-landmark"></i> <!-- Changed icon to something more relevant -->
+        </div>
+        <div class="sidebar-brand-text mx-3">Constituency Project</div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Dashboard -->
+    <li class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.dashboard') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Project Management
+    </div>
+
+    <!-- Projects -->
+    <li class="nav-item {{ request()->is('admin/projects*') ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProjects"
+            aria-expanded="true" aria-controls="collapseProjects">
+            <i class="fas fa-fw fa-project-diagram"></i>
+            <span>Projects</span>
+        </a>
+
+        <div id="collapseProjects"
+            class="collapse {{ request()->is('admin/projects*') ? 'show' : '' }}"
+            data-parent="#accordionSidebar">
+
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Project Actions:</h6>
+                <a class="collapse-item" href="{{ route('admin.projects.create') }}">
+                    <i class="fas fa-plus-circle mr-1"></i> Add New Project
+                </a>
+                <a class="collapse-item" href="{{ route('admin.projects.index') }}">
+                    <i class="fas fa-list mr-1"></i> View All Projects
+                </a>
+                <a class="collapse-item" href="{{ route('admin.projects.structural') }}">
+                    <i class="fas fa-building mr-1"></i> Structural Projects
+                </a>
+                <a class="collapse-item" href="{{ route('admin.projects.capacity') }}">
+                    <i class="fas fa-users mr-1"></i> Capacity Building
+                </a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Categories -->
+    <li class="nav-item {{ request()->is('admin/categories*') ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCategories"
+            aria-expanded="true" aria-controls="collapseCategories">
+            <i class="fas fa-fw fa-folder"></i>
+            <span>Categories & Services</span>
+        </a>
+
+        <div id="collapseCategories"
+            class="collapse {{ request()->is('admin/categories*') ? 'show' : '' }}"
+            data-parent="#accordionSidebar">
+
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Services Management:</h6>
+                <a class="collapse-item" href="{{ route('admin.categories.create') }}">
+                    <i class="fas fa-plus-circle mr-1"></i> Add Category
+                </a>
+                <a class="collapse-item" href="{{ route('admin.categories.index') }}">
+                    <i class="fas fa-list mr-1"></i> View Categories
+                </a>
+                <a class="collapse-item" href="{{ route('admin.services.index') }}">
+                    <i class="fas fa-cogs mr-1"></i> Manage Services
+                </a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Beneficiaries -->
+    <li class="nav-item {{ request()->is('admin/beneficiaries*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.beneficiaries.index') }}">
+            <i class="fas fa-fw fa-user-check"></i>
+            <span>Beneficiaries</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Content & Media
+    </div>
+
+    <!-- Testimonials -->
+    <li class="nav-item {{ request()->is('admin/testimonials*') ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTestimonials"
+            aria-expanded="true" aria-controls="collapseTestimonials">
+            <i class="fas fa-fw fa-quote-right"></i>
+            <span>Testimonials</span>
+        </a>
+
+        <div id="collapseTestimonials"
+            class="collapse {{ request()->is('admin/testimonials*') ? 'show' : '' }}"
+            data-parent="#accordionSidebar">
+
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Testimonial Actions:</h6>
+                <a class="collapse-item" href="{{ route('admin.testimonials.create') }}">
+                    <i class="fas fa-plus-circle mr-1"></i> Add Testimonial
+                </a>
+                <a class="collapse-item" href="{{ route('admin.testimonials.index') }}">
+                    <i class="fas fa-list mr-1"></i> View Testimonials
+                </a>
+                <a class="collapse-item" href="{{ route('admin.testimonials.media') }}">
+                    <i class="fas fa-newspaper mr-1"></i> Media Coverage
+                </a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Gallery & Documentation -->
+    <li class="nav-item {{ request()->is('admin/gallery*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.gallery.index') }}">
+            <i class="fas fa-fw fa-images"></i>
+            <span>Project Gallery</span>
+        </a>
+    </li>
+
+    <!-- Reports -->
+    <li class="nav-item {{ request()->is('admin/reports*') ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReports"
+            aria-expanded="true" aria-controls="collapseReports">
+            <i class="fas fa-fw fa-chart-bar"></i>
+            <span>Reports & Analytics</span>
+        </a>
+
+        <div id="collapseReports"
+            class="collapse {{ request()->is('admin/reports*') ? 'show' : '' }}"
+            data-parent="#accordionSidebar">
+
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Report Types:</h6>
+                <a class="collapse-item" href="{{ route('admin.reports.annual') }}">
+                    <i class="fas fa-calendar-alt mr-1"></i> Annual Impact Reports
+                </a>
+                <a class="collapse-item" href="{{ route('admin.reports.projects') }}">
+                    <i class="fas fa-chart-line mr-1"></i> Project Analytics
+                </a>
+                <a class="collapse-item" href="{{ route('admin.reports.export') }}">
+                    <i class="fas fa-download mr-1"></i> Export Data
+                </a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        System & Users
+    </div>
+
+    <!-- Clients -->
+    <li class="nav-item {{ request()->is('admin/clients*') ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClients"
+            aria-expanded="true" aria-controls="collapseClients">
+            <i class="fas fa-fw fa-user-tie"></i>
+            <span>Clients</span>
+        </a>
+
+        <div id="collapseClients"
+            class="collapse {{ request()->is('admin/clients*') ? 'show' : '' }}"
+            data-parent="#accordionSidebar">
+
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Client Management:</h6>
+                <a class="collapse-item" href="{{ route('admin.clients.create') }}">
+                    <i class="fas fa-plus-circle mr-1"></i> Add Client
+                </a>
+                <a class="collapse-item" href="{{ route('admin.clients.index') }}">
+                    <i class="fas fa-list mr-1"></i> View Clients
+                </a>
+                <a class="collapse-item" href="{{ route('admin.clients.portal') }}">
+                    <i class="fas fa-laptop-house mr-1"></i> Client Portal
+                </a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Users -->
+    <li class="nav-item {{ request()->is('admin/users*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.users.index') }}">
+            <i class="fas fa-fw fa-users-cog"></i>
+            <span>Admin Users</span>
+        </a>
+    </li>
+
+    <!-- Contact Enquiries -->
+    <li class="nav-item {{ request()->is('admin/contacts*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.contacts.index') }}">
+            <i class="fas fa-fw fa-envelope"></i>
+            <span>Contact Enquiries</span>
+            @if($newContactsCount > 0)
+                <span class="badge badge-danger badge-counter">{{ $newContactsCount }}</span>
+            @endif
+        </a>
+    </li>
+
+    <!-- Settings -->
+    <li class="nav-item {{ request()->is('admin/settings*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.settings.index') }}">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Settings</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Quick Stats -->
+    <div class="sidebar-card d-none d-lg-flex">
+        <div class="card-body text-center">
+            <i class="fas fa-chart-pie fa-2x text-white-50"></i>
+            <p class="mt-2 mb-0">Active Projects</p>
+            <h5 class="text-white">{{ $activeProjectsCount ?? 0 }}</h5>
+            <p class="mt-2 mb-0">Total Beneficiaries</p>
+            <h5 class="text-white">{{ number_format($totalBeneficiaries ?? 0) }}</h5>
+        </div>
+    </div>
+
+    <!-- Sidebar Toggler -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+</ul>
+<!-- End of Sidebar -->
