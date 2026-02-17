@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('phase');
             $table->string('status')->nullable();
             $table->string('description')->nullable();
+            $table->unsignedInteger('weight')->default(1);
             $table->timestamp('started_at')->nullable();
             $table->timestamp('ended_at')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();

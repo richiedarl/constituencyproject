@@ -23,6 +23,7 @@ class Project extends Model
         'short_description',
         'type',
         'status',
+        'contractor_count',
 
         // Ownership / Scope
         'candidate_id',
@@ -104,6 +105,12 @@ class Project extends Model
             }
         });
     }
+
+    public function contributors()
+{
+    return $this->belongsToMany(Contributor::class, 'applications')
+        ->where('status', 'approved');
+}
 /**
  * Get the current active phase of the project
  */
@@ -135,6 +142,44 @@ public function getTimelinePhasesAttribute()
                 ->orderBy('started_at', 'asc')
                 ->get();
 }
+
+public function getHealthStatusAttribute(): string
+{
+    $progress = $this->progress_percentage;
+
+    if ($this->status === 'completed') {
+        return 'healthy';
+    }
+
+    if ($progress < 30) {
+        return 'critical';
+    }
+
+    if ($progress < 70) {
+        return 'warning';
+    }
+
+    return 'healthy';
+}
+
+
+public function getProgressPercentageAttribute(): float
+{
+    return $this->progress();
+}
+
+
+
+public function getProgressBarClassAttribute(): string
+{
+    return match (true) {
+        $this->progress_percentage >= 80 => 'bg-success',
+        $this->progress_percentage >= 40 => 'bg-warning',
+        default => 'bg-danger',
+    };
+}
+
+
 
 
     /**
@@ -234,4 +279,25 @@ public function getTimelinePhasesAttribute()
             default     => 'badge-secondary',
         };
     }
+
+public function progress(): float
+{
+    $phases = $this->relationLoaded('phases')
+        ? $this->phases
+        : $this->phases()->get();
+
+    $totalWeight = $phases->sum('weight');
+
+    if ($totalWeight <= 0) {
+        return 0;
+    }
+
+    $completedWeight = $phases
+        ->whereNotNull('ended_at')
+        ->sum('weight');
+
+    return min(round(($completedWeight / $totalWeight) * 100, 1), 100);
+}
+
+
 }

@@ -50,6 +50,7 @@ return new class extends Migration
 
             $table->decimal('estimated_budget', 15, 2)->nullable();
             $table->decimal('actual_cost', 15, 2)->nullable();
+            $table->bigInteger('contractor_count')->default(0);
 
             /*
             |--------------------------------------------------------------------------

@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    
+
     <!-- Favicons -->
     <link href="{{ asset('fe/assets/img/logo_current.webp')}}" rel="icon">
     <link href="{{ asset('fe/assets/img/logo_current.webp')}}" rel="apple-touch-icon">
@@ -51,6 +51,7 @@
                         </ul>
                     </div>
                 @endif
+
 
                 <!-- Topbar -->
                 @include('inc.header')

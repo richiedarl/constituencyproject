@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Candidate extends Model
 {
@@ -13,26 +14,42 @@ class Candidate extends Model
         'name',
         'slug',
         'email',
+        'paid',
         'phone',
         'district',
+        'state',
         'gender',
         'bio',
         'photo',
     ];
+
+    protected $casts = [
+        'paid' => 'boolean',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($candidate) {
+            if (empty($candidate->slug)) {
+                $candidate->slug = Str::slug($candidate->name);
+            }
+        });
+    }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function positions(): HasMany
+    public function projects(): HasMany
     {
-        return $this->hasMany(CandidatePosition::class);
+        return $this->hasMany(Project::class);
     }
 
-    public function currentPosition()
+    public function applications(): HasMany
     {
-        return $this->hasOne(CandidatePosition::class)
-                    ->where('is_current', true);
+        return $this->hasMany(Application::class);
     }
 }

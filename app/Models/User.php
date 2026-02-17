@@ -20,10 +20,26 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'role',
         'username',
         'admin',
         'password',
     ];
+
+    public function wallet(){
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function contractor()
+{
+    return $this->hasOne(\App\Models\Contractor::class);
+}
+
+public function contributor()
+{
+    return $this->hasOne(\App\Models\Contributor::class);
+}
+
 
     /**
      * The attributes that should be hidden for serialization.

@@ -182,6 +182,15 @@
                            value="{{ old('estimated_budget', $csvData['estimated_budget'] ?? '') }}">
                 </div>
 
+                <div class="form-group">
+                    <label>Contractor Fee</label>
+                    <input type="number"
+                           name="actual_cos"
+                           class="form-control"
+                           step="0.01"
+                           value="{{ old('actual_cost', $csvData['actual_cost'] ?? '') }}">
+                </div>
+
                 <hr>
                                 {{-- Featured Image --}}
                 <div class="form-group">
@@ -295,7 +304,7 @@
         <label>District / Constituency</label>
         <input type="text" name="district" class="form-control">
     </div>
-    
+
     <div class="form-group">
         <label>Community</label>
         <input type="text" name="community" class="form-control">
@@ -304,6 +313,11 @@
     <div class="form-group">
         <label>Address</label>
         <input type="text" name="address" class="form-control">
+    </div>
+    
+    <div class="form-group">
+        <label>State</label>
+        <input type="text" name="state" class="form-control">
     </div>
 
     <div class="form-group">

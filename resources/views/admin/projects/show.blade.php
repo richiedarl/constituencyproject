@@ -7,9 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 text-gray-800">{{ $project->title }}</h1>
-            <p class="text-muted mb-0">
-                {{ $project->full_location ?? 'No location provided' }}
-            </p>
+            <p class="text-muted mb-0">{{ $project->full_location ?? 'No location provided' }}</p>
         </div>
         <a href="{{ route('admin.projects.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Back to Projects
@@ -22,7 +20,7 @@
             <div class="col-md-3">
                 <strong>Status</strong><br>
                 <span class="badge {{ $project->getStatusBadgeClass() }}">
-                    {{ ucfirst($project->current_phase->status) }}
+                    {{ ucfirst($project->current_phase->status ?? 'N/A') }}
                 </span>
             </div>
             <div class="col-md-3">
@@ -43,19 +41,16 @@
     {{-- PHASE TIMELINE --}}
     <div class="card shadow mb-4">
         <div class="card-header">
-            <h6 class="m-0 font-weight-bold text-primary">
-                Project Phases Timeline
-            </h6>
+            <h6 class="m-0 font-weight-bold text-primary">Project Phases Timeline</h6>
         </div>
         <div class="card-body">
 
             @forelse($project->timeline_phases as $phase)
-                <div class="mb-4 p-3 border rounded 
-                    {{ $project->current_phase && $phase->id === $project->current_phase->id ? 'border-primary bg-light' : '' }}">
+                <div class="mb-4 p-3 border rounded {{ $project->current_phase && $phase->id === $project->current_phase->id ? 'border-primary bg-light' : '' }}">
 
-                    <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
-                            <h6 class="mb-0">
+                            <h6 class="mb-1">
                                 {{ ucfirst($phase->status) }}
                                 @if(is_null($phase->ended_at))
                                     <span class="badge badge-success ml-2">Active</span>
@@ -63,20 +58,28 @@
                                     <span class="badge badge-secondary ml-2">Closed</span>
                                 @endif
                             </h6>
-                            <small class="text-muted">
-                                {{ $phase->status }}
-                                · Started {{ \Carbon\Carbon::parse($phase->started_at)->format('d M Y') }}
+
+                            <small class="text-muted d-block">
+                                Started {{ \Carbon\Carbon::parse($phase->started_at)->format('d M Y') }}
                                 @if($phase->ended_at)
                                     · Ended {{ \Carbon\Carbon::parse($phase->ended_at)->format('d M Y') }}
                                 @endif
                             </small>
+
+                            @if($phase->description)
+                                <p class="mt-2 mb-0">{{ $phase->description }}</p>
+                            @endif
                         </div>
 
-                        {{-- Add Media only to active phase --}}
+                        {{-- Add Media (ACTIVE PHASE ONLY) --}}
                         @if($project->current_phase && $phase->id === $project->current_phase->id)
                             <button
+                                type="button"
                                 class="btn btn-sm btn-success add-media-btn"
-                                data-phase-id="{{ $phase->id }}">
+                                data-phase-id="{{ $phase->id }}"
+                                data-toggle="modal"
+                                data-target="#addMediaModal"
+                            >
                                 <i class="fas fa-plus"></i> Add Media
                             </button>
                         @endif
@@ -86,12 +89,15 @@
                     @if($phase->media->count())
                         <div class="row">
                             @foreach($phase->media as $media)
-                                <div class="col-md-3 mb-3" data-media-id="{{ $media->id }}">
+                                <div class="col-md-3 mb-3">
                                     <div class="card">
+
                                         @if($media->file_type === 'image')
-                                            <img src="{{ asset('storage/' . $media->file_path) }}"
-                                                 class="card-img-top"
-                                                 style="height: 180px; object-fit: cover;">
+                                            <img
+                                                src="{{ asset('storage/' . $media->file_path) }}"
+                                                class="card-img-top"
+                                                style="height:180px;object-fit:cover;"
+                                            >
                                         @else
                                             <video class="w-100" height="180" controls>
                                                 <source src="{{ asset('storage/' . $media->file_path) }}">
@@ -99,12 +105,19 @@
                                         @endif
 
                                         <div class="card-body p-2 text-center">
-                                            <button
-                                                class="btn btn-sm btn-danger delete-media-btn"
-                                                data-id="{{ $media->id }}">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            <form
+                                                method="POST"
+                                                action="{{ route('admin.projects.media.delete', $media->id) }}"
+                                                onsubmit="return confirm('Delete this media?')"
+                                            >
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
                                         </div>
+
                                     </div>
                                 </div>
                             @endforeach
@@ -125,8 +138,7 @@
 {{-- ADD MEDIA MODAL --}}
 <div class="modal fade" id="addMediaModal" tabindex="-1">
     <div class="modal-dialog">
-        <form id="addMediaForm" method="POST" enctype="multipart/form-data"
-              action="{{ route('admin.projects.addMedia') }}">
+        <form method="POST" enctype="multipart/form-data" action="{{ route('admin.projects.addMedia') }}">
             @csrf
             <input type="hidden" name="phase_id" id="mediaPhaseId">
 
@@ -138,8 +150,10 @@
 
                 <div class="modal-body">
                     <div id="mediaInputs">
-                        <input type="file" name="media[]" class="form-control mb-2" required>
-                    </div>
+                <!-- In your blade file, update the file input -->
+                <input type="file" name="media[]" class="form-control mb-2" 
+                    accept="image/*,video/*" required>
+                                    </div>
 
                     <button type="button" class="btn btn-sm btn-outline-primary" id="addMoreMedia">
                         <i class="fas fa-plus"></i> Add another
@@ -159,52 +173,35 @@
     </div>
 </div>
 
-{{-- SCRIPTS --}}
+{{-- PURE VANILLA JS --}}
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
 
-    // Open Add Media Modal
+    const phaseInput = document.getElementById('mediaPhaseId');
+    const mediaInputs = document.getElementById('mediaInputs');
+
     document.querySelectorAll('.add-media-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            document.getElementById('mediaPhaseId').value = btn.dataset.phaseId;
-            $('#addMediaModal').modal('show');
+            phaseInput.value = btn.dataset.phaseId;
         });
     });
 
-    // Add more file inputs
     document.getElementById('addMoreMedia').addEventListener('click', () => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.name = 'media[]';
-        input.className = 'form-control mb-2';
-        document.getElementById('mediaInputs').appendChild(input);
-    });
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.name = 'media[]';
+    input.className = 'form-control mb-2';
+    input.accept = 'image/*,video/*'; // Add this line
+    mediaInputs.appendChild(input);
+});
 
-    // Delete media
-    document.querySelectorAll('.delete-media-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const mediaId = btn.dataset.id;
-
-            Swal.fire({
-                title: 'Delete media?',
-                text: 'This action cannot be undone.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete'
-            }).then(result => {
-                if (result.isConfirmed) {
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = `/admin/media/${mediaId}/delete`;
-                    form.innerHTML = `@csrf`;
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-            });
-        });
+    // Reset modal on close
+    $('#addMediaModal').on('hidden.bs.modal', () => {
+        mediaInputs.innerHTML = '<input type="file" name="media[]" class="form-control mb-2" required>';
+        phaseInput.value = '';
     });
 
 });
 </script>
+
 @endsection

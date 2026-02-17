@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
             $table->integer('candidate_id');
+            $table->integer('user_id');
             $table->string('currency')->default('NGN');
             $table->double('balance')->nullable()->default(0.00);
             $table->timestamps();

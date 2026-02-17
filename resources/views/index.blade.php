@@ -6,6 +6,7 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Index - Constituency Project</title>
   <meta name="description" content="">
+  <meta name="color-scheme" content="light only">
   <meta name="keywords" content="">
 
   <!-- Favicons -->
@@ -27,7 +28,7 @@
   <!-- Main CSS File -->
   <link href="{{ asset('fe/assets/css/main.css')}}" rel="stylesheet">
 
- 
+
 </head>
 
 <body class="index-page">
@@ -48,10 +49,28 @@
     <li><a href="#personalities">Personalities</a></li>
     <li><a href="#portfolio">Portfolios</a></li>
     <li><a href="#team">Team</a></li>
+
+    <!-- Dropdown Menu -->
+    <li class="dropdown">
+      <a href="#">
+        <span>Opportunities</span>
+        <i class="bi bi-chevron-down toggle-dropdown"></i>
+      </a>
+
+      <ul class="dropdown-menu">
+        <li><a href="{{ route('contractor.register') }}">Become A Contractor</a></li>
+        <li><a href="{{ route('contributor.register') }}">Become A Contributor</a></li>
+        <li><a href="/contributors-leaderboard">Contributor's Leaderboard</a></li>
+        <li><a href="{{ route('user.candidates.create') }}">Apply As A Candidate</a></li>
+      </ul>
+    </li>
+
     <li><a href="#contact">Contact</a></li>
   </ul>
+
   <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
 </nav>
+
 
     </div>
   </header>
@@ -105,7 +124,7 @@
              data-aos="fade-left"
              data-aos-delay="300"
              data-aos-duration="900">
-          
+
           <img src="{{ asset('fe/assets/img/about/community-led.jpg') }}"
                alt="Community Project Execution"
                class="img-fluid hero-img-hover">
@@ -232,131 +251,239 @@
   </div>
 </section>
 
-    <!-- Services Section -->
-<section id="services" class="services section">
+@if(isset($projects) && $projects->count() > 0)
+<section id="top-projects" class="top-projects section bg-light">
 
-  <!-- Section Title -->
   <div class="container section-title" data-aos="fade-up">
-    <span class="subtitle">What We Showcase</span>
-    <h2>Inside Every Public Portfolio</h2>
+    <span class="subtitle">Featured Opportunities</span>
+    <h2>Top Active Projects</h2>
     <p>
-      Each personality featured on Constituency Project  has a dedicated
-      public portfolio that documents their projects, impact, and service
-      record in a clear, verifiable, and accessible format.
+      Explore verified public projects. Support them financially as a donor
+      or apply as a contractor to execute and deliver impact.
     </p>
-  </div><!-- End Section Title -->
+  </div>
 
-  <div class="container" data-aos="fade-up" data-aos-delay="100">
+  <div class="container">
+    <div class="row gy-4">
 
+      @foreach($projects as $project)
+
+        <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+          <div class="card shadow-sm border-0 h-100 project-card">
+
+            <!-- Project Image -->
+            <img src="{{ asset('storage/'.$project->featured_image) }}"
+                 class="card-img-top"
+                 style="height:220px; object-fit:cover;">
+
+            <div class="card-body d-flex flex-column">
+
+              <!-- Title -->
+              <h5 class="card-title mb-2">
+                {{ $project->title }}
+              </h5>
+
+              <!-- Location -->
+              <small class="text-muted mb-2">
+                {{ $project->full_location }}
+              </small>
+
+              <!-- Progress -->
+              <div class="progress mb-3" style="height:6px;">
+                <div class="progress-bar {{ $project->progress_bar_class }}"
+                     style="width: {{ $project->progress_percentage }}%">
+                </div>
+              </div>
+
+              <!-- ACTION BUTTONS -->
+              <div class="mt-auto d-flex justify-content-between flex-wrap gap-2">
+
+                <!-- View Project Info -->
+                <a href="{{ route('projects.show', $project->slug) }}"
+                   class="btn btn-sm btn-outline-primary animated-btn"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="top"
+                   title="View Project Info">
+                  <i class="bi bi-eye"></i>
+                </a>
+
+                <!-- View Candidate Info -->
+                <a href="{{ route('candidate.show', $project->candidate->slug) }}"
+                   class="btn btn-sm btn-outline-dark animated-btn"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="top"
+                   title="View Candidate Info">
+                  <i class="bi bi-person"></i>
+                </a>
+
+                @if($project->is_active)
+
+                  <!-- Contribute To Project -->
+                  <a href="{{ route('contributor.project.apply', $project->id) }}"
+                     class="btn btn-sm btn-success animated-btn"
+                     data-bs-toggle="tooltip"
+                     data-bs-placement="top"
+                     title="Contribute To Project">
+                    <i class="bi bi-cash-coin"></i>
+                  </a>
+
+                  <!-- Become A Contractor -->
+                  <a href="{{ route('contractor.projects.form', $project->id) }}"
+                     class="btn btn-sm btn-warning animated-btn"
+                     data-bs-toggle="tooltip"
+                     data-bs-placement="top"
+                     title="Become A Contractor">
+                    <i class="bi bi-tools"></i>
+                  </a>
+
+                @endif
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      @endforeach
+
+    </div>
+  </div>
+
+</section>
+
+@endif
+
+<section id="leaderboard" class="leaderboard section">
+
+  <div class="container section-title" data-aos="fade-up">
+    <span class="subtitle">Recognition</span>
+    <h2>Top Contributors</h2>
+    <p>
+      Individuals and organizations leading the movement through verified
+      financial support and community backing.
+    </p>
+  </div>
+
+  <div class="container">
+    <div class="row gy-4">
+
+      @foreach($topContributors as $contributor)
+
+        <div class="col-lg-4 col-md-6" data-aos="fade-up">
+
+          <div class="card text-center shadow-sm border-0 p-4">
+
+            <img src="{{ $contributor->photo
+                ? asset('storage/'.$contributor->photo)
+                : asset('images/avatar.png') }}"
+                 class="rounded-circle mx-auto mb-3"
+                 width="80" height="80">
+
+            <h5 class="mb-1">{{ $contributor->name }}</h5>
+
+            <small class="text-muted mb-2 d-block">
+              Total Donated
+            </small>
+
+            <h4 class="text-success">
+              ₦{{ number_format($contributor->donations_sum_amount ?? 0) }}
+            </h4>
+
+          </div>
+
+        </div>
+
+      @endforeach
+
+    </div>
+  </div>
+
+</section>
+
+<section id="platform-vision" class="services section">
+
+  <div class="container section-title" data-aos="fade-up">
+    <span class="subtitle">Our Platform</span>
+    <h2>Transparency. Participation. Accountability.</h2>
+    <p>
+      Constituency Project connects public project owners, verified contractors,
+      and community donors within one transparent digital ecosystem.
+    </p>
+  </div>
+
+  <div class="container">
     <div class="row gy-5">
 
-      <!-- Item 1 -->
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+      <div class="col-lg-4 col-md-6">
         <div class="service-item">
           <div class="service-icon">
-            <i class="bi bi-building"></i>
+            <i class="bi bi-search"></i>
           </div>
-          <h3>Executed Projects</h3>
+          <h3>Verified Public Projects</h3>
           <p>
-            Documented infrastructure and development projects including
-            schools, healthcare facilities, roads, boreholes, and ICT hubs.
+            Explore active and completed projects with documented phases,
+            media evidence, budgets, and timelines.
           </p>
-          <a href="#portfolio" class="service-link">
-            View Examples <i class="bi bi-arrow-right"></i>
-          </a>
         </div>
       </div>
 
-      <!-- Item 2 -->
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+      <div class="col-lg-4 col-md-6">
         <div class="service-item">
           <div class="service-icon">
-            <i class="bi bi-people-fill"></i>
+            <i class="bi bi-cash-stack"></i>
           </div>
-          <h3>Human Capital Programs</h3>
+          <h3>Community Funding</h3>
           <p>
-            Training, empowerment, and capacity-building initiatives targeting
-            youth, women, farmers, entrepreneurs, and local communities.
+            Become a contributor and financially support projects you believe in.
+            Every donation is tracked and transparent.
           </p>
-          <a href="#portfolio" class="service-link">
-            Explore Portfolios <i class="bi bi-arrow-right"></i>
-          </a>
         </div>
       </div>
 
-      <!-- Item 3 -->
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+      <div class="col-lg-4 col-md-6">
         <div class="service-item">
           <div class="service-icon">
-            <i class="bi bi-camera-video"></i>
+            <i class="bi bi-hammer"></i>
           </div>
-          <h3>Photo & Video Evidence</h3>
+          <h3>Contract Opportunities</h3>
           <p>
-            Visual documentation including site photos, commissioning events,
-            beneficiary engagement, and project completion evidence.
+            Skilled contractors can apply to execute verified projects.
+            All applications are reviewed and approved by project owners.
           </p>
-          <a href="#portfolio" class="service-link">
-            See Documentation <i class="bi bi-arrow-right"></i>
-          </a>
         </div>
       </div>
 
-      <!-- Item 4 -->
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+      <div class="col-lg-4 col-md-6">
         <div class="service-item">
           <div class="service-icon">
-            <i class="bi bi-geo-alt-fill"></i>
+            <i class="bi bi-bar-chart-line"></i>
           </div>
-          <h3>Location & Coverage</h3>
+          <h3>Real-Time Progress Tracking</h3>
           <p>
-            Clearly mapped projects showing wards, communities, local
-            governments, and states impacted by each intervention.
+            Track phase-by-phase execution, completion percentages,
+            and project health indicators.
           </p>
-          <a href="#portfolio" class="service-link">
-            View Coverage <i class="bi bi-arrow-right"></i>
-          </a>
         </div>
       </div>
 
-      <!-- Item 5 -->
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+      <div class="col-lg-4 col-md-6">
         <div class="service-item">
           <div class="service-icon">
-            <i class="bi bi-patch-check-fill"></i>
+            <i class="bi bi-award"></i>
           </div>
-          <h3>Verification & Transparency</h3>
+          <h3>Recognition & Leaderboards</h3>
           <p>
-            Supporting evidence such as timelines, beneficiary counts,
-            completion status, and independent documentation.
+            Top contributors are publicly recognized for their support
+            and impact across communities.
           </p>
-          <a href="#portfolio" class="service-link">
-            Learn How <i class="bi bi-arrow-right"></i>
-          </a>
-        </div>
-      </div>
-
-      <!-- Item 6 -->
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-        <div class="service-item">
-          <div class="service-icon">
-            <i class="bi bi-bar-chart-line-fill"></i>
-          </div>
-          <h3>Impact Summary</h3>
-          <p>
-            Aggregated statistics showing number of projects, beneficiaries,
-            sectors covered, and overall community impact.
-          </p>
-          <a href="#portfolio" class="service-link">
-            View Impact <i class="bi bi-arrow-right"></i>
-          </a>
         </div>
       </div>
 
     </div>
-
   </div>
 
-</section><!-- /Services Section -->
+</section>
+
 
 
 <div class="container section-title" data-aos="fade-up">
@@ -851,8 +978,8 @@
 
   <div class="container copyright text-center mt-4 py-3">
     <p style="color: color-mix(in srgb, var(--contrast-color), transparent 60%);">
-      © <span>Copyright</span> 
-      <strong class="px-1 sitename" style="color: var(--accent-color);">Constituency Project </strong> 
+      © <span>Copyright</span>
+      <strong class="px-1 sitename" style="color: var(--accent-color);">Constituency Project </strong>
       <span>All Rights Reserved</span>
     </p>
   </div>
@@ -865,6 +992,18 @@
 
   <!-- Preloader -->
   <div id="preloader"></div>
+
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const tooltipTriggerList = [].slice.call(
+    document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  );
+
+  tooltipTriggerList.map(function (el) {
+    return new bootstrap.Tooltip(el);
+  });
+});
+</script>
 
   <!-- Vendor JS Files -->
   <script src="{{ asset('fe/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

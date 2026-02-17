@@ -16,7 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('username')->unique();
+            $table->string('role')->default('candidate');
             $table->boolean('admin')->default(0);
+            $table->boolean('candidate')->default(0);
+            $table->boolean('contributor')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

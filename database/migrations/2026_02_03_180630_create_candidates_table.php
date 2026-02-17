@@ -25,6 +25,7 @@ return new class extends Migration
         $table->string('title')->nullable();
 
         $table->string('district');
+        $table->string('state');
         $table->enum('gender', ['male', 'female', 'other'])->nullable();
 
         $table->text('bio')->nullable();

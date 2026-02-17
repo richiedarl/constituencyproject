@@ -1,6 +1,4 @@
-@php
-    use Illuminate\Support\Str;
-@endphp
+@php use Illuminate\Support\Str; @endphp
 
 @extends('layouts.admin')
 
@@ -10,66 +8,112 @@
     <h1 class="h3 mb-3 text-gray-800">Media Portal</h1>
 
     <div class="alert alert-info">
-        This is the Media portal of <strong>{{ $phase->status }}</strong>.
-        To view all media for this project, go to 
+        This is the Media portal of <strong>{{ ucfirst($phase->status) }}</strong>.
+        View all media in the
         <a href="{{ route('admin.projects.show', $project->id) }}">Full Project View</a>.
     </div>
 
+    {{-- UPLOAD MEDIA --}}
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Upload Media for this Phase</h6>
+        <div class="card-header">
+            <h6 class="m-0 font-weight-bold text-primary">Upload Media</h6>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('admin.projects.addMedia') }}" enctype="multipart/form-data">
-                {{ csrf_field() }}
+            <form method="POST"
+                  action="{{ route('admin.projects.addMedia') }}"
+                  enctype="multipart/form-data">
+                @csrf
                 <input type="hidden" name="phase_id" value="{{ $phase->id }}">
+
                 <div id="mediaInputs">
-                    <div class="mb-2">
-                        <input type="file" name="media[]" class="form-control" accept="image/*,video/*">
-                    </div>
+<!-- In your blade file, update the file input -->
+<input type="file" name="media[]" class="form-control mb-2" 
+       accept="image/*,video/*" required>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="addMoreMedia">+ Add more</button>
-                <button type="submit" class="btn btn-primary mt-3">Upload Media</button>
+
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        onclick="addMediaInput()">
+                    + Add more
+                </button>
+
+                <button class="btn btn-primary mt-3">Upload</button>
             </form>
         </div>
     </div>
 
-    @if($media->count() > 0)
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Existing Media</h6>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                @foreach($media as $m)
-                    <div class="col-md-3 mb-3">
-                       
+    {{-- MEDIA GRID --}}
+    <div class="row">
+        @foreach($media as $m)
+            <div class="col-md-3 mb-3" id="media-{{ $m->id }}">
+                <div class="card">
 
-        @if(Str::endsWith($m->file_path, ['.mp4', '.mov', '.avi']))
-            <video width="100%" controls>
-                <source src="{{ asset('storage/'.$m->file_path) }}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        @else
-            <img src="{{ asset('storage/'.$m->file_path) }}" class="img-fluid rounded" alt="Media">
-        @endif
+                    <div class="position-relative">
+
+    @if(Str::endsWith($m->file_path, ['.mp4', '.mov', '.avi']))
+        <video width="100%" controls>
+            <source src="{{ asset('storage/'.$m->file_path) }}" type="video/mp4">
+        </video>
+    @else
+        <img src="{{ asset('storage/'.$m->file_path) }}"
+             class="img-fluid rounded">
+    @endif
+
+    <form method="POST"
+          action="{{ route('admin.projects.media.delete', $m->id) }}"
+          onsubmit="return confirm('Delete this media?')"
+          class="position-absolute"
+          style="top:8px; right:8px;">
+        @csrf
+        @method('DELETE')
+
+        <button class="btn btn-sm btn-danger">
+            <i class="fas fa-trash"></i>
+        </button>
+    </form>
+
+</div>
+
+
+                    <div class="card-body text-center p-2">
+                        <form method="POST"
+                            action="{{ route('admin.projects.media.delete', $m->id) }}"
+                            onsubmit="return confirm('Delete this media?')"
+                            class="d-inline">
+                            @csrf
+                            @method('DELETE')
+
+                            <button class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+
 
                     </div>
-                @endforeach
+
+                </div>
             </div>
-        </div>
+        @endforeach
     </div>
-    @endif
 
 </div>
 
 <script>
-document.getElementById('addMoreMedia').addEventListener('click', () => {
+function addMediaInput() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.name = 'media[]';
+    input.accept = 'image/*,video/*'; // Add this line
+    input.className = 'form-control mb-2';
+    document.getElementById('mediaInputs').appendChild(input);
+}
+</script>
+
+<script>
+document.getElementById('addMediaModal').addEventListener('hidden.bs.modal', () => {
     const container = document.getElementById('mediaInputs');
-    const div = document.createElement('div');
-    div.classList.add('mb-2');
-    div.innerHTML = '<input type="file" name="media[]" class="form-control" accept="image/*,video/*" required>';
-    container.appendChild(div);
+    container.innerHTML = '<input type="file" name="media[]" class="form-control mb-2" required>';
 });
 </script>
+
 @endsection

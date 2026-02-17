@@ -1,4 +1,4 @@
-    
+
     <form method="POST" action="{{ route('candidates.store') }}"
              enctype="multipart/form-data">
                 {{ csrf_field() }}
@@ -52,6 +52,11 @@
     <div class="form-group">
         <label>District / Constituency</label>
         <input type="text" name="district" class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label>State</label>
+        <input type="text" name="state" class="form-control">
     </div>
 
     <div class="form-group">

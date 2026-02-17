@@ -25,12 +25,7 @@ class CandidateController extends Controller
         return view('admin.candidates.create');
     }
 
-    public function show(Candidate $candidate)
-    {
-        return view('candidates.show', [
-            'candidate' => $candidate->load(['currentPosition', 'positions', 'wallet'])
-        ]);
-    }
+
 
  public function store(Request $request)
 {
@@ -42,6 +37,7 @@ class CandidateController extends Controller
         'phone'     => 'nullable|string',
         'gender'    => 'nullable|string',
         'district'  => 'nullable|string',
+        'state'  => 'nullable|string',
 
         // Media
         'photo'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -92,6 +88,7 @@ class CandidateController extends Controller
             [
                 'name'     => $validated['name'],
                 'username' => $extractedUsername,
+                'candidate' => 1,
                 'password' => bcrypt('password')
             ]
         );
@@ -125,6 +122,7 @@ class CandidateController extends Controller
          | Create Wallet
         -------------------------*/
         Wallet::create([
+            'user_id' => $user->id,
             'candidate_id' => $candidate->id,
             'balance'      => 0,
             'currency'     => 'NGN',
@@ -254,6 +252,7 @@ public function project_candidate_store(Request $request){
          | Create Wallet
         -------------------------*/
         Wallet::create([
+            'user_id' => $user->id,
             'candidate_id' => $candidate->id,
             'balance'      => 0,
             'currency'     => 'NGN',
@@ -274,6 +273,74 @@ public function project_candidate_store(Request $request){
   return redirect()
     ->back()
         ->with('success', 'Candidate created successfully');
+}
+
+public function show(Candidate $candidate)
+{
+    $candidate->load([
+        'user',
+        'positions',
+        'currentPosition',
+        'wallet',
+        'projects' => function ($query) {
+            $query->with([
+                'phases' => function ($q) {
+                    $q->orderBy('created_at')
+                      ->with(['media' => function ($img) {
+                          $img->orderBy('created_at')->limit(5);
+                      }]);
+                }
+            ]);
+        }
+    ]);
+
+    // ✅ Query-based counts (scopes work here)
+    $activeProjectsCount = $candidate->projects()
+        ->active()
+        ->count();
+
+    // Compute progress per project (collection logic)
+    $projects = $candidate->projects->map(function ($project) {
+
+        $totalWeight = $project->phases->sum('weight');
+
+        $completedWeight = $project->phases
+            ->where('is_completed', true)
+            ->sum('weight');
+
+        $project->progress = $totalWeight > 0
+            ? round(($completedWeight / $totalWeight) * 100)
+            : 0;
+
+        return $project;
+    });
+
+    return view(
+        'admin.candidates.show',
+        compact('candidate', 'projects', 'activeProjectsCount')
+    );
+}
+
+
+
+public function fund(Request $request, Candidate $candidate)
+{
+    $data = $request->validate([
+        'amount' => 'required|numeric|min:1'
+    ]);
+
+    DB::transaction(function () use ($candidate, $data) {
+
+        $wallet = $candidate->wallet()->firstOrCreate(
+            ['candidate_id' => $candidate->id],
+            ['user_id' => $candidate->user->id],
+            ['balance' => 0, 'currency' => 'NGN']
+        );
+
+        $wallet->increment('balance', $data['amount']);
+    });
+
+    return back()->with('success', 'Candidate wallet funded successfully.');
 }
 
 

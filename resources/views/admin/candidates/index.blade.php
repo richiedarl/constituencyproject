@@ -73,8 +73,8 @@
                                     <div class="d-flex align-items-center">
 
                                         <img
-                                            src="{{ $candidate->photo 
-                                                ? asset('storage/'.$candidate->photo) 
+                                            src="{{ $candidate->photo
+                                                ? asset('storage/'.$candidate->photo)
                                                 : asset('images/avatar.png') }}"
                                             width="40"
                                             height="40"
@@ -112,6 +112,9 @@
                                         class="btn btn-sm btn-outline-primary">
                                         View
                                     </a>
+                                    <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#fundWalletModal">
+                                        <i class="fas fa-coins mr-1"></i> Fund Wallet
+                                    </button>
 
                                     <a
                                         href="{{ route('candidates.edit', $candidate->id) }}"
@@ -163,6 +166,31 @@
         {{ $candidates->links() }}
     </div>
 
+</div>
+<div class="modal fade" id="fundWalletModal">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ route('admin.candidates.fund', $candidate) }}">
+            @csrf
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Fund Candidate Wallet</h5>
+                    <small>This is assuming that the user has sent money to our bank account. Note that without funding a user, a user cannot have projects started for them. When the project is marked as ended, The full amount is removed from the user account and moved into admin wallet.</small>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Amount (₦)</label>
+                        <input type="number" name="amount" class="form-control" min="1" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary">Fund Wallet</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
 @endsection
