@@ -6,11 +6,11 @@
         <div class="col-md-8">
             <div class="card shadow">
                 <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">Step 2: Project Information</h4>
+                    <h4 class="mb-0">Submit Your Project</h4>
                 </div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('candidates.projects.store', $candidate->id) }}">
+                    <form method="POST" action="{{ route('user.candidates.projects.store', $candidate->id) }}">
                         @csrf
 
                         <h5 class="mb-3">Project Details</h5>
@@ -132,13 +132,13 @@
                         <div class="alert alert-info">
                             <small>
                                 <i class="fas fa-info-circle"></i>
-                                Next step: You'll break down this project into phases and upload photos for each phase.
+                                Your project has been submitted. You’ll be notified once the administrator reviews and approves it.
                             </small>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success btn-lg">Continue to Project Phases</button>
-                            <a href="{{ route('candidates.dashboard') }}" class="btn btn-outline-secondary">Save and Continue Later</a>
+                            <button type="submit" class="btn btn-success btn-lg">Submit Project</button>
+                            <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary">Save and Continue Later</a>
                         </div>
                     </form>
                 </div>

@@ -9,6 +9,7 @@ class Donation extends Model
     protected $fillable = [
         'contributor_id',
         'project_id',
+        'approved',
         'amount'
     ];
 

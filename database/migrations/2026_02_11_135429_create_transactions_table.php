@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
+            $table->double('amount');
+            $table->string('type');
+            $table->string('reference');
+            $table->text('description');
+            table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
+            $table->string('reference')->unique();
+            $table->json('metadata')->nullable();
             $table->timestamps();
         });
     }

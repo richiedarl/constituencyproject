@@ -40,8 +40,24 @@ Route::delete('/projects/media/{media}', [
 
 // User Routes
 
-Route::get('/user/{project}/show', [ProjectController::class, 'userShow'])
-->name('projects.show');
-
 Route::get('/user/projects/index', [ProjectController::class, 'userIndex'])
-->name('project.index');
+->name('user.projects.index');
+
+Route::get('/user/projects/past-projects', [ProjectController::class, 'userPast'])
+->name('user.projects.past-projects');
+
+Route::get('/user/projects/my-projects', [ProjectController::class, 'userMine'])
+->name('user.mine.projects');
+
+Route::get('/user/{project}/show', [ProjectController::class, 'userShow'])
+->name('user.projects.show');
+
+Route::get('/user/completed', [ProjectController::class, 'userCompleted'])
+->name('user.projects.completed');
+
+// Only for Contractors
+Route::post(
+    '/user/projects/{project}/upload-media',
+    [ProjectController::class, 'contractorUploadMedia']
+)->name('projects.uploadMedia');
+

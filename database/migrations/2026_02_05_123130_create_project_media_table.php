@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('project_phase_id')->constrained('project_phases')->cascadeOnDelete();
             $table->string('file_path');
+             $table->foreignId('update_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('file_type');
             $table->timestamps();
         });

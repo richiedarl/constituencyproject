@@ -29,7 +29,11 @@ return new class extends Migration
 
             $table->string('status')
                 ->default('pending'); // pending, approved, rejected
-
+            $table->string('approved_at')->nullable();
+            $table->string('approved_by')->nullable();
+            $table->string('cancelled_at')->nullable();
+            $table->string('cancelled_by')->nullable();
+            $table->string('cancellation_reason')->nullable();
             $table->timestamps();
 
             $table->unique(['project_id', 'contractor_id']);

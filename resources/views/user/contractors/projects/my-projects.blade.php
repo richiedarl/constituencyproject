@@ -16,7 +16,7 @@
                     Projects where you're an approved contractor
                 </p>
             </div>
-            <a href="{{ route('project.index') }}" class="btn btn-outline-primary btn-lg">
+            <a href="{{ route('user.projects.index') }}" class="btn btn-outline-primary btn-lg">
                 <i class="fas fa-search me-2"></i>
                 Browse More Projects
             </a>

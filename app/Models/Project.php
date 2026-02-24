@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use App\Models\Application;
 use Carbon\Carbon;
 
 class Project extends Model
@@ -42,6 +43,7 @@ class Project extends Model
         'completion_date',
         'estimated_budget',
         'actual_cost',
+        'paid',
 
         // Media
         'featured_image',
@@ -72,45 +74,77 @@ class Project extends Model
     /**
      * Boot logic
      */
-    protected static function boot()
-    {
-        parent::boot();
+   protected static function boot()
+{
+    parent::boot();
 
-        static::creating(function ($project) {
-            if (empty($project->slug)) {
-                $project->slug = Str::slug($project->title);
-            }
+    static::creating(function ($project) {
 
-            $originalSlug = $project->slug;
-            $count = 1;
+        if (empty($project->slug)) {
+            $project->slug = Str::slug($project->title);
+        }
 
-            while (static::where('slug', $project->slug)->exists()) {
-                $project->slug = "{$originalSlug}-{$count}";
-                $count++;
-            }
+        $originalSlug = $project->slug;
+        $count = 1;
 
-            if (auth()->check()) {
-                $project->created_by = auth()->id();
-            }
+        while (static::where('slug', $project->slug)->exists()) {
+            $project->slug = "{$originalSlug}-{$count}";
+            $count++;
+        }
 
-            // Safe defaults
-            $project->status ??= 'planning';
-            $project->is_active ??= true;
-            $project->is_public ??= true;
-        });
+        if (auth()->check()) {
+            $project->created_by = auth()->id();
+        }
 
-        static::updating(function ($project) {
-            if (auth()->check()) {
-                $project->updated_by = auth()->id();
-            }
-        });
-    }
+        // Default safe values
+        $project->status ??= 'planning';
+        $project->is_public ??= true;
+
+        // 🔒 Activation Control
+        if (auth()->check() && auth()->user()->admin === true) {
+            // Admin-created project
+            $project->is_active = true;
+        } else {
+            // Candidate-created project
+            $project->is_active = false;
+        }
+    });
+
+    static::updating(function ($project) {
+        if (auth()->check()) {
+            $project->updated_by = auth()->id();
+        }
+    });
+}
 
     public function contributors()
 {
     return $this->belongsToMany(Contributor::class, 'applications')
         ->where('status', 'approved');
 }
+
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
+public function donations()
+{
+    return $this->hasMany(Donation::class);
+}
+
+public function applications()
+{
+    return $this->hasMany(Application::class);
+}
+
+public function contractors()
+{
+    return $this->belongsToMany(Contractor::class, 'applications')
+        ->withPivot('status', 'approved_at', 'approved_by')
+        ->withTimestamps();
+}
+
 /**
  * Get the current active phase of the project
  */
@@ -187,7 +221,7 @@ public function getProgressBarClassAttribute(): string
      */
     public function candidate()
     {
-        return $this->belongsTo(Candidate::class);
+        return $this->belongsTo(Candidate::class, 'candidate_id');
     }
 
     public function phases(){

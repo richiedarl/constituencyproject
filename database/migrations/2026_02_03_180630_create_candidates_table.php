@@ -23,6 +23,8 @@ return new class extends Migration
         $table->string('email')->unique();
         $table->string('phone')->nullable();
         $table->string('title')->nullable();
+        $table->boolean('paid')->default(0);
+        $table->boolean('approved')->default(0);
 
         $table->string('district');
         $table->string('state');

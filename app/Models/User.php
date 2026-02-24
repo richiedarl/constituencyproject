@@ -30,14 +30,20 @@ class User extends Authenticatable
         return $this->hasOne(Wallet::class);
     }
 
-    public function contractor()
+public function contractor()
 {
-    return $this->hasOne(\App\Models\Contractor::class);
+    return $this->hasOne(Contractor::class);
 }
+
+public function candidate()
+{
+    return $this->hasOne(Candidate::class);
+}
+
 
 public function contributor()
 {
-    return $this->hasOne(\App\Models\Contributor::class);
+    return $this->hasOne(Contributor::class);
 }
 
 

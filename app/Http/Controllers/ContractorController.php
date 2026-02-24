@@ -25,6 +25,87 @@ class ContractorController extends Controller
     {
         $this->walletService = $walletService;
     }
+ /**
+     * Get contractor's past projects (Your route: /contractor/past-projects)
+     */
+    public function pastProjects()
+    {
+        $contractor = Contractor::where('user_id', Auth::id())->firstOrFail();
+
+        $pastProjects = $contractor->applications()
+            ->with(['project'])
+            ->where('status', Application::STATUS_APPROVED)
+            ->whereHas('project', function($q) {
+                $q->where('status', 'completed');
+            })
+            ->get()
+            ->map(function($application) {
+                $project = $application->project;
+                $project->application_id = $application->id;
+                $project->completed_at = $application->project->completion_date;
+                return $project;
+            });
+
+        return view('user.contractors.projects.past', compact('pastProjects'));
+    }
+
+
+    /**
+     * Show form to apply for a specific project (Your route: /project/{project}/contractor)
+     */
+    public function showApplyFormForProject(Project $project)
+    {
+        // Check if project is accepting applications
+        if (!in_array($project->status, ['planning', 'ongoing'])) {
+            return redirect()->back()
+                ->with('error', 'This project is not accepting applications at this time.');
+        }
+
+        // Get contractor profile
+        $contractor = Contractor::where('user_id', Auth::id())->first();
+
+        if (!$contractor) {
+            return redirect()->route('contractor.register')
+                ->with('info', 'Please register as a contractor first.');
+        }
+
+        if (!$contractor->approved) {
+            return redirect()->back()
+                ->with('error', 'Your contractor profile is pending approval.');
+        }
+
+        // Check if already applied
+        $existingApplication = Application::where('contractor_id', $contractor->id)
+            ->where('project_id', $project->id)
+            ->first();
+
+        if ($existingApplication) {
+            return redirect()->back()
+                ->with('info', 'You have already applied for this project.');
+        }
+
+        return view('user.contractors.apply', compact('project', 'contractor'));
+    }
+
+    /**
+     * Withdraw application from project (Extra helper method)
+     */
+    public function withdrawApplication(Project $project)
+    {
+        $contractor = Contractor::where('user_id', Auth::id())->firstOrFail();
+
+        $application = Application::where('contractor_id', $contractor->id)
+            ->where('project_id', $project->id)
+            ->whereIn('status', ['pending', 'applied'])
+            ->firstOrFail();
+
+        $application->update([
+            'status' => Application::STATUS_WITHDRAWN
+        ]);
+
+        return redirect()->back()
+            ->with('success', 'Application withdrawn successfully.');
+    }
 
      public function active()
     {
@@ -226,33 +307,43 @@ class ContractorController extends Controller
     /**
      * Show a specific project (read-only view for contractors)
      */
-    public function showProject(Project $project)
-    {
-        try {
-            $user = Auth::user();
+    /**
+ * Show a specific project (read-only view for contractors)
+ */
+public function showProject(Project $project)
+{
+    try {
+        $user = Auth::user();
 
-            if (!$user || !$user->contractor) {
-                abort(403, 'Access denied.');
-            }
-
-            // Verify contractor has approved application for this project
-            $hasAccess = Application::where('contractor_id', $user->contractor->id)
-                ->where('project_id', $project->id)
-                ->where('status', 'approved')
-                ->exists();
-
-            if (!$hasAccess) {
-                abort(403, 'You do not have access to this project.');
-            }
-
-            // Load relationships
-            $project->load(['phases.media', 'candidate']);
-
-            return view('user.contractors.projects.show', compact('project'));
-        } catch (\Exception $e) {
-            return back()->with('error', 'Unable to load project details.');
+        if (!$user || !$user->contractor) {
+            abort(403, 'Access denied.');
         }
+
+        // Verify contractor has approved application for this project
+        $hasAccess = Application::where('contractor_id', $user->contractor->id)
+            ->where('project_id', $project->id)
+            ->where('status', 'approved')
+            ->exists();
+
+        if (!$hasAccess) {
+            abort(403, 'You do not have access to this project.');
+        }
+
+        // Load relationships: phases with media and candidate
+        $project->load(['phases.media', 'candidate']);
+
+        // Determine the latest active phase (null ended_at)
+        $latestPhase = $project->phases
+            ->whereNull('ended_at')
+            ->sortByDesc('started_at')
+            ->first();
+
+        return view('user.contractors.projects.show', compact('project', 'latestPhase'));
+    } catch (\Exception $e) {
+        \Log::error('Error loading project for contractor: ' . $e->getMessage());
+        return back()->with('error', 'Unable to load project details.');
     }
+}
 
     /**
      * Show apply form
@@ -309,98 +400,114 @@ class ContractorController extends Controller
         }
     }
 
-    /**
-     * Store contractor profile
-     */
-    public function store(Request $request)
+      public function profile()
     {
-        try {
-            $validated = $request->validate([
-                'company_name' => [
-                    'nullable',
-                    'string',
-                    'max:255',
-                    Rule::unique('contractors', 'company_name')->ignore(optional(Auth::user()?->contractor)->id)
-                ],
-                'username' => [
-                    'nullable',
-                    'string',
-                    'max:255',
-                    Rule::unique('users', 'username')->ignore(Auth::id())
-                ],
-                'skills'   => 'nullable|array',
-                'skills.*' => 'exists:skills,id',
-                'phone' => 'required|string|max:20',
-                'experience_years' => 'required|integer|min:0',
-                'specialization' => 'required|string|max:255',
-                'district' => 'nullable|string|max:255',
-                'photo' => 'nullable|image|mimes:jpg,jpeg,webp,png|max:5048',
-                'email' => 'nullable|email',
-                'password' => 'nullable|min:6',
-                'has_account' => 'required_if:guest,true|in:yes,no',
-                'project_id' => 'nullable|exists:projects,id'
-            ]);
+        $contractor = Contractor::where('user_id', Auth::id())->firstOrFail();
+        $contractor->load('user');
 
-            // Handle authentication for guests
-            if (!Auth::check()) {
-                $authResult = $this->handleAuthentication($request);
-                if ($authResult instanceof \Illuminate\Http\RedirectResponse) {
-                    return $authResult;
-                }
-            }
-
-            $user = Auth::user();
-
-            // Generate unique slug
-            $slug = $this->generateUniqueSlug($user);
-
-            // Handle photo upload
-            $photoPath = $this->handlePhotoUpload($request);
-
-            // Create or update contractor
-            $contractor = Contractor::updateOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'company_name' => $request->company_name,
-                    'phone' => $request->phone,
-                    'experience_years' => $request->experience_years,
-                    'occupation' => $request->specialization,
-                    'district' => $request->district,
-                    'slug' => $slug,
-                    'photo' => $photoPath,
-                ]
-            );
-            // CREATE WALLET FOR THE USER
-                // This will create a wallet if it doesn't exist, or return existing one
-                $wallet = $this->walletService->ensureWalletExists($user->id);
-
-
-            $message = $contractor->wasRecentlyCreated
-                ? 'Contractor profile created successfully.'
-                : 'Contractor profile updated successfully.';
-
-            // Save skills
-            if ($request->has('skills')) {
-                $contractor->skills()->sync($request->input('skills', []));
-            }
-
-            // Handle project application
-            if ($request->filled('project_id')) {
-                return $this->handleProjectApplication($request, $contractor, $message);
-            }
-
-            return redirect()->route('dashboard')->with('success', $message);
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-             return back()
-        ->withInput()
-        ->withErrors([
-            'system' => $e->getMessage()
-        ]);
-}
+        return view('user.contractor.profile', compact('contractor'));
     }
+
+      /**
+     * Update contractor profile (Extra helper method)
+     */
+    public function updateProfile(Request $request)
+    {
+        $contractor = Contractor::where('user_id', Auth::id())->firstOrFail();
+
+        $validated = $request->validate([
+            'phone' => 'sometimes|string|max:20',
+            'district' => 'sometimes|string|max:100',
+            'occupation' => 'sometimes|string|max:100',
+            'skills' => 'sometimes|array',
+            'skills.*' => 'string',
+            'photo' => 'nullable|image|max:2048',
+            'bio' => 'nullable|string|max:1000'
+        ]);
+
+        if ($request->hasFile('photo')) {
+            $validated['photo'] = $request->file('photo')->store('contractors', 'public');
+        }
+
+        $contractor->update($validated);
+
+        return redirect()->back()
+            ->with('success', 'Profile updated successfully.');
+    }
+    public function store(Request $request)
+{
+    $user = auth()->user();
+
+    // Only plain users can become contractors
+    if ($user->candidate || $user->contributor || $user->admin) {
+        abort(403, 'You are not allowed to register as a contractor. Contact Admin to request change of position.');
+    }
+
+    $validated = $request->validate([
+        'company_name' => [
+            'nullable',
+            'string',
+            'max:255',
+            Rule::unique('contractors', 'company_name')
+                ->ignore(optional($user->contractor)->id)
+        ],
+        'skills' => 'nullable|array',
+        'skills.*' => 'exists:skills,id',
+        'phone' => 'required|string|max:20',
+        'experience_years' => 'required|integer|min:0',
+        'specialization' => 'required|string|max:255',
+        'district' => 'nullable|string|max:255',
+        'photo' => 'nullable|image|mimes:jpg,jpeg,webp,png|max:5048',
+        'project_id' => 'nullable|exists:projects,id'
+    ]);
+
+    try {
+
+        $slug = $this->generateUniqueSlug($user);
+        $photoPath = $this->handlePhotoUpload($request);
+
+        $contractor = Contractor::updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'company_name' => $validated['company_name'] ?? null,
+                'phone' => $validated['phone'],
+                'experience_years' => $validated['experience_years'],
+                'occupation' => $validated['specialization'],
+                'district' => $validated['district'] ?? null,
+                'slug' => $slug,
+                'photo' => $photoPath,
+            ]
+        );
+
+        // Ensure wallet exists (clean + safe)
+        $this->walletService->ensureWalletExists($user->id);
+
+        // Sync skills
+        if (!empty($validated['skills'])) {
+            $contractor->skills()->sync($validated['skills']);
+        }
+
+        // Optional: Apply to project
+        if (!empty($validated['project_id'])) {
+            return $this->handleProjectApplication(
+                $validated['project_id'],
+                $contractor
+            );
+        }
+
+        return redirect()
+            ->route('dashboard')
+            ->with('success', 'Contractor profile saved successfully.');
+
+    } catch (\Exception $e) {
+
+        return back()
+            ->withInput()
+            ->withErrors([
+                'system' => 'Something went wrong. Please try again.'
+            ]);
+    }
+}
 
     /**
      * Handle authentication for guest users
@@ -530,12 +637,12 @@ class ContractorController extends Controller
             ]);
 
             return redirect()
-                ->route('projects.show', $request->project_id)
+                ->route('user.projects.show', $request->project_id)
                 ->with('success', 'Application submitted successfully.');
         }
 
         return redirect()
-            ->route('projects.show', $request->project_id)
+            ->route('user.projects.show', $request->project_id)
             ->with('info', 'You have already applied to this project.');
     }
 }

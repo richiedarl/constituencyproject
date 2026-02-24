@@ -3,15 +3,17 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\UserCandidateController;
+use App\Http\Controllers\IndexController;
 
 // Public Candidate Registration
 Route::get('/candidate/register', [CandidateController::class, 'register'])->name('candidate.register');
 
-Route::prefix('user/candidates')->name('user.candidates.')
+Route::middleware('auth')->prefix('user/candidates')->name('user.candidates.')
 ->group(function () {
     Route::get('/create', [UserCandidateController::class, 'create'])->name('create');
     Route::post('/', [UserCandidateController::class, 'store'])->name('store');
 });
+
 
 Route::middleware(['auth'])->prefix('user/candidates')->name('user.candidates.')
 ->group(function () {
@@ -21,8 +23,10 @@ Route::middleware(['auth'])->prefix('user/candidates')->name('user.candidates.')
     Route::put('/{candidate}', [UserCandidateController::class, 'update'])->name('update');
 
     // Projects
-    Route::get('/{candidate}/projects/create', [UserCandidateController::class, 'createProject'])->name('projects.create');
-    Route::post('/{candidate}/projects', [UserCandidateController::class, 'storeProject'])->name('projects.store');
+    Route::get('/{candidate}/projects/create', [UserCandidateController::class, 'createProject'])
+    ->name('projects.create');
+    Route::post('/{candidate}/projects', [UserCandidateController::class, 'storeProject'])
+    ->name('projects.store');
 
     // Phases
     Route::get('/{candidate}/projects/{project}/phases/create', [UserCandidateController::class, 'createPhase'])->name('projects.phases.create');
@@ -35,7 +39,7 @@ Route::middleware(['auth'])->prefix('user/candidates')->name('user.candidates.')
 |--------------------------------------------------------------------------
 */
 Route::prefix('candidates')->group(function () {
-    Route::get('/', [CandidateController::class, 'index'])->name('candidates.index');
+    Route::get('/all', [CandidateController::class, 'index'])->name('candidates.index.all');
     Route::get('/create', [CandidateController::class, 'create'])->name('candidates.create');
     Route::post('store', [CandidateController::class, 'store'])->name('candidates.store');
     Route::get('/{candidate}/edit', [CandidateController::class, 'edit'])->name('candidates.edit');
@@ -58,4 +62,11 @@ Route::prefix('candidates')->group(function () {
     Route::post('/{candidate}/projects', [PortfolioController::class, 'attachProject'])->name('candidates.projects.attach');
 });
 
+Route::post('candidate/fund/{candidate}',[CandidateController::class, 'fund'])->name('admin.candidates.fund');
+
 // This route is going to the same controller method as the candidates.store
+Route::get('/candidates', [IndexController::class, 'candidates'])->name('candidates.index');
+Route::get('/candidate/{slug}', [IndexController::class, 'candidateProfile'])->name('candidate.public.show');
+Route::get('/projects', [IndexController::class, 'projects'])->name('projects.index');
+Route::get('/project/{slug}', [IndexController::class, 'projectShow'])->name('project.public.show');
+

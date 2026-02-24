@@ -73,7 +73,7 @@ Constituency project
 
       <ul class="dropdown-menu">
         <li><a href="{{ route('contractor.register') }}">Become A Contractor</a></li>
-        <li><a href="{{ route('contributor.register') }}">Become A Contributor</a></li>
+        <li><a href="{{ route('contributor.apply') }}">Become A Contributor</a></li>
         <li><a href="/contributors-leaderboard">Contributor's Leaderboard</a></li>
         <li><a href="{{ route('candidate.register') }}">Apply As A Candidate</a></li>
       </ul>
@@ -124,6 +124,7 @@ Constituency project
 
   </main>
 
+@stack('scripts')
 
 @if (session('success'))
 <script>

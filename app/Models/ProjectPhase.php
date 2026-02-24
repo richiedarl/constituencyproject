@@ -13,9 +13,10 @@ class ProjectPhase extends Model
     protected $fillable = [
         'project_id',
         'phase',           // planning | executing | documenting | completed
-        'description',     // short desc 
+        'description',     // short desc
         'status',          // Ground tilled, foundation layed etc
         'started_at',
+        'weight',
         'ended_at',
         'created_by',
         'updated_by',
@@ -37,6 +38,11 @@ class ProjectPhase extends Model
     public function media()
     {
         return $this->hasMany(ProjectMedia::class);
+    }
+
+    public function updates()
+    {
+        return $this->hasMany(Update::class);
     }
 
     /**

@@ -8,11 +8,7 @@ use Illuminate\Support\Facades\DB;
 class Wallet extends Model
 {
     protected $fillable = [
-        'candidate_id',
         'user_id',
-        'admin_id',
-        'contributor_id',
-        'contractor_id',
         'balance',
         'currency'
     ];
@@ -20,7 +16,11 @@ class Wallet extends Model
     protected $casts = [
         'balance' => 'decimal:2',
     ];
-
+// In app/Models/Wallet.php
+public function pendingFundingRequests()
+{
+    return $this->hasMany(PendingFundingRequest::class);
+}
     public function candidate(){
         return $this->belongsTo(Candidate::class);
     }

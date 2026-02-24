@@ -9,6 +9,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PortfolioController;
+use App\Http\Controllers\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +19,7 @@ use App\Http\Controllers\PortfolioController;
 
 Route::get('/', [IndexController::class, 'home'])->name('landing');
 
-
+Route::post('/register/store', [RegisterController::class, 'register'])->name('register.store');
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/services', [PageController::class, 'services'])->name('services');
@@ -44,14 +45,15 @@ Route::post('/register', [\App\Http\Controllers\Auth\RegisteredUserController::c
 | Dashboard (requires auth)
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function () {
+ Route::middleware('auth')->group(function () {
 
-    Route::get('/home', [IndexController::class, 'index'])->name('dashboard');
+     Route::get('/home', [IndexController::class, 'index'])->name('dashboard');
 
-    // Profile management
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+//     // Profile management
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
 });
 
 
@@ -64,12 +66,7 @@ Route::middleware('auth')->group(function () {
 */
 Route::get('/portfolios', [PortfolioController::class, 'index'])->name('portfolios.index');
 
-/*
-|--------------------------------------------------------------------------
-| Reports
-|--------------------------------------------------------------------------
-*/
-Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+
 
 Route::post('/login-validate', [LoginController::class, 'loginValidate'])
     ->name('login_validate');
@@ -92,12 +89,16 @@ Route::post('/logout', [LoginController::class, 'logout'])
 
 
 require __DIR__.'/applications.php';
+require __DIR__.'/admin.php';
 require __DIR__.'/candidates.php';
 require __DIR__.'/contractors.php';
 require __DIR__.'/projects.php';
 require __DIR__.'/contributors.php';
+require __DIR__.'/reports.php';
+require __DIR__.'/wallet.php';
+require __DIR__.'/profile.php';
 
-Route::get('/{candidate:slug}', [CandidateController::class, 'show'])->name('candidate.show');
+// Route::get('/{candidate:slug}', [CandidateController::class, 'show'])->name('candidate.show');
 
 
 require __DIR__.'/auth.php';

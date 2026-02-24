@@ -244,7 +244,8 @@ public function project_candidate_store(Request $request){
                 'gender'   => $validated['gender'] ?? null,
                 'district' => $validated['district'] ?? null,
                 'photo'    => $photoPath,
-                'user_id'  => $user->id
+                'user_id'  => $user->id,
+                'approved' => 1
             ]);
 
 
@@ -253,7 +254,7 @@ public function project_candidate_store(Request $request){
         -------------------------*/
         Wallet::create([
             'user_id' => $user->id,
-            'candidate_id' => $candidate->id,
+            // 'candidate_id' => $candidate->id,
             'balance'      => 0,
             'currency'     => 'NGN',
         ]);

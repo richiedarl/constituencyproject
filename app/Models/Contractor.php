@@ -24,16 +24,28 @@ class Contractor extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function projects()
-    {
-        return $this->belongsToMany(Project::class, 'applications')
-                    ->withPivot('status', 'created_at')
-                    ->withTimestamps();
-    }
+   public function applications()
+{
+    return $this->hasMany(Application::class);
+}
+public function projects()
+{
+    return $this->belongsToMany(Project::class, 'applications')
+        ->withPivot('status', 'approved_at', 'approved_by')
+        ->withTimestamps();
+}
 
-    public function applications(){
-        return $this->hasMany(Application::class);
-    }
+
+
+public function pendingApplications()
+{
+    return $this->hasMany(Application::class)->where('status', 'pending');
+}
+
+public function approvedApplications()
+{
+    return $this->hasMany(Application::class)->where('status', 'approved');
+}
 
     // In Contractor.php
 public function skills()
@@ -41,6 +53,14 @@ public function skills()
     return $this->belongsToMany(Skill::class, 'contractor_skills')
                 ->withTimestamps()
                 ->withPivot('years_experience', 'certification');
+}
+
+public function getApprovedProjectsCountAttribute()
+{
+    return $this->attributes['projects_count']
+        ?? $this->applications()
+            ->where('status', Application::STATUS_APPROVED)
+            ->count();
 }
 
 }

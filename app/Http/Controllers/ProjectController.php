@@ -93,7 +93,7 @@ class ProjectController extends Controller
     {
         $projects = Project::with(['candidate', 'phases'])
             ->where('is_active', true)
-            ->where('status', 'ongoing')
+            // ->where('status', 'ongoing')
             ->orderBy('start_date', 'desc')
             ->paginate(15);
 
@@ -115,42 +115,257 @@ class ProjectController extends Controller
         }
     }
 
-    public function userIndex()
-    {
-        $user = Auth::user();
+public function userIndex()
+{
+    $user = auth()->user();
 
-        // Get all active/public projects
-        $projects = Project::with(['candidate', 'phases'])
-            ->active()
-            ->public()
+    // Determine user role
+    $role = null;
+    if ($user) {
+        if ($user->candidate) {
+            $role = 'candidate';
+        } elseif ($user->contractor) {
+            $role = 'contractor';
+        } elseif ($user->contributor) {
+            $role = 'contributor';
+        }
+    }
+
+    // Start with base query for all active/public projects
+    $projects = Project::with(['candidate', 'phases'])
+        ->active()
+        ->public()
+        ->latest()
+        ->get();
+
+    // Add user-specific data if logged in
+    if ($user) {
+        foreach ($projects as $project) {
+            // Default flags
+            $project->is_owner = false;
+            $project->can_edit = false;
+            $project->can_apply = false;
+            $project->can_sponsor = false;
+            $project->user_applied = false;
+
+            // Check if user is the project owner (candidate)
+            if ($user->candidate && $project->candidate_id === $user->candidate->id) {
+                $project->is_owner = true;
+                $project->can_edit = ($project->status !== 'approved');
+            }
+
+            // Check if user applied as contractor
+            if ($user->contractor) {
+                $application = Application::where('contractor_id', $user->contractor->id)
+                    ->where('project_id', $project->id)
+                    ->first();
+
+                if ($application) {
+                    $project->user_applied = true;
+                    $project->user_application_status = $application->status;
+                    $project->user_application_id = $application->id;
+                } else {
+                    $project->can_apply = true;
+                }
+            }
+
+            // Check if user is a contributor
+            if ($user->contributor) {
+                $project->can_sponsor = true;
+            }
+        }
+    }
+
+    return view('user.projects.index', compact('projects', 'role'));
+}
+
+public function userMine()
+{
+    $user = auth()->user();
+
+    // Candidate → projects they created
+    if ($user->candidate) {
+
+        $projects = Project::where('candidate_id', $user->candidate->id)
             ->latest()
             ->get();
 
-        // Get user's applications if they are a contractor
-        $userApplications = collect();
-        if ($user && $user->contractor) {
-            $userApplications = Application::where('contractor_id', $user->contractor->id)
-                ->whereIn('project_id', $projects->pluck('id'))
-                ->get()
-                ->keyBy('project_id');
+        return view('user.projects.mine', compact('projects'));
+    }
+
+    // Contributor → projects they sponsored
+    if ($user->contributor) {
+
+        $projects = Project::whereHas('donations', function ($query) use ($user) {
+            $query->where('contributor_id', $user->id);
+        })
+        ->with('donations')
+        ->latest()
+        ->get();
+
+        return view('user.projects.mine', compact('projects'));
+    }
+
+    abort(403);
+}
+
+public function userPast()
+{
+    $user = auth()->user();
+
+    if ($user->candidate) {
+        $projects = Project::where('user_id', $user->id)
+            ->whereIn('status', ['rejected', 'cancelled'])
+            ->latest()
+            ->get();
+    }
+
+    if ($user->contributor) {
+        $projects = Project::whereHas('donations', function ($q) use ($user) {
+                $q->where('contributor_id', $user->id);
+            })
+            ->whereIn('status', ['rejected', 'cancelled'])
+            ->latest()
+            ->get();
+    }
+
+    return view('user.projects.past', compact('projects'));
+}
+
+public function userCompleted()
+{
+    $user = auth()->user();
+
+    if ($user->candidate) {
+        $projects = Project::where('user_id', $user->id)
+            ->where('status', 'completed')
+            ->latest()
+            ->get();
+    }
+
+    if ($user->contributor) {
+        $projects = Project::whereHas('donations', function ($q) use ($user) {
+                $q->where('contributor_id', $user->id);
+            })
+            ->where('status', 'completed')
+            ->latest()
+            ->get();
+    }
+
+    return view('user.projects.completed', compact('projects'));
+}
+
+public function userShow(Project $project)
+{
+    $user = auth()->user();
+
+    // Authorization check
+    $isOwner = $project->candidate_id === $user->id;
+    $isSponsor = $project->donations()
+        ->where('contributor_id', $user->id)
+        ->exists();
+
+    if (!$isOwner && !$isSponsor) {
+        abort(403, 'Unauthorized access to this project.');
+    }
+
+    // Eager-load only what the accessors will use
+    $project->load([
+        'phases.media',
+        'candidate',
+    ]);
+
+    return view('user.projects.show', compact('project'));
+}
+
+
+
+public function edit(Project $project)
+{
+    // Eager-load relationships needed for editing
+    $project->load([
+        'candidate.user',
+        'phases' => fn ($q) => $q->orderBy('started_at'),
+    ]);
+
+    return view('admin.projects.edit', compact('project'));
+}
+
+public function update(Request $request, Project $project)
+{
+    $validated = $request->validate([
+        'title'               => 'required|string|max:255',
+        'short_description'   => 'nullable|string',
+        'description'         => 'nullable|string',
+        'type'                => 'required|in:executing,documenting',
+        'status'              => 'required|string',
+        'start_date'          => 'nullable|date',
+        'completion_date'     => 'nullable|date|after_or_equal:start_date',
+        'estimated_budget'    => 'nullable|numeric|min:0',
+        'actual_cost'         => 'nullable|numeric|min:0',
+        'featured_image'      => 'nullable|image|max:5120',
+        'media.*'             => 'nullable|file|
+                                  mimetypes:image/jpeg,image/png,image/webp,
+                                  video/mp4|max:20480',
+        'is_public'           => 'boolean',
+        'is_active'           => 'boolean',
+    ]);
+
+    DB::beginTransaction();
+
+    try {
+
+        /**
+         * 1️⃣ Handle Featured Image Replacement
+         */
+        if ($request->hasFile('featured_image')) {
+            $validated['featured_image'] =
+                $request->file('featured_image')
+                        ->store('projects/featured', 'public');
         }
 
-        // Add application status to each project
-        $projects->each(function ($project) use ($userApplications) {
-            if ($userApplications->has($project->id)) {
-                $application = $userApplications->get($project->id);
-                $project->user_application_status = $application->status;
-                $project->user_application_id = $application->id;
-                $project->user_applied = true;
-            } else {
-                $project->user_applied = false;
-                $project->user_application_status = null;
-                $project->user_application_id = null;
-            }
-        });
+        /**
+         * 2️⃣ Update Project Core Fields
+         */
+        $project->update($validated);
 
-        return view('user.projects.index', compact('projects'));
+        /**
+         * 3️⃣ Attach New Media to CURRENT PHASE
+         */
+        if ($request->hasFile('media')) {
+
+            $phase = $project->current_phase;
+
+            if ($phase) {
+                foreach ($request->file('media') as $file) {
+
+                    $path = $file->store('projects/media', 'public');
+
+                    ProjectMedia::create([
+                        'project_phase_id' => $phase->id,
+                        'file_path'        => $path,
+                        'file_type'        => str_starts_with($file->getMimeType(), 'video')
+                                                ? 'video'
+                                                : 'image',
+                    ]);
+                }
+            }
+        }
+
+        DB::commit();
+
+        return redirect()
+            ->route('admin.projects.show', $project)
+            ->with('success', 'Project updated successfully.');
+
+    } catch (\Throwable $e) {
+        DB::rollBack();
+
+        return back()
+            ->withErrors('Failed to update project: ' . $e->getMessage())
+            ->withInput();
     }
+}
 
     // Show media page for a single phase
     public function mediaPhasePage(ProjectPhase $phase)
@@ -247,18 +462,6 @@ class ProjectController extends Controller
         return back()->with('success', 'Media uploaded successfully.');
     }
 
-    public function userShow(Project $project){
-       // Eager-load only what the accessors will use
-        $project->load([
-            'phases.media',
-            'candidate',
-        ]);
-
-        return view('projects.show', [
-            'project' => $project,
-        ]);
-    }
-
     public function show(Project $project)
     {
         // Eager-load only what the accessors will use
@@ -316,6 +519,7 @@ class ProjectController extends Controller
             'description'        => 'nullable|string',
             'status'             => 'nullable|string',
             'project_mode'       => 'required|in:executing,documenting',
+            'type'       => 'required|in:executing,documenting',
             'start_date'         => 'nullable|date',
             'completion_date'    => 'nullable|date',
             'state'              => 'nullable|string',
@@ -352,11 +556,16 @@ class ProjectController extends Controller
             $status = $validated['status'];
             unset($validated['status']);
 
+            $type = $validated['type'];
+            unset($validated['type']);
+
             /**
              * 3️⃣ Create Project
              */
             $project = Project::create($validated);
-
+            $project->update([
+                'type' => $type
+            ]);
             /**
              * 4️⃣ Create Initial Phase
              */
@@ -409,4 +618,36 @@ class ProjectController extends Controller
 
         return back()->with('success', 'Media deleted successfully.');
     }
+
+    public function contractorUploadMedia(Request $request, Project $project)
+{
+    $user = auth()->user();
+
+    if (!$user->contractor) {
+        abort(403);
+    }
+
+    $latestPhase = $project->current_phase;
+
+    if (!$latestPhase) {
+        return back()->with('error', 'No active phase found.');
+    }
+
+    $request->validate([
+        'media.*' => 'required|file|mimes:jpg,jpeg,png,mp4,pdf|max:5120'
+    ]);
+
+    foreach ($request->file('media') as $file) {
+
+        $path = $file->store('project_media', 'public');
+
+        ProjectMedia::create([
+            'project_phase_id' => $latestPhase->id,
+            'file_path' => $path,
+            'file_type' => $file->getClientOriginalExtension(),
+        ]);
+    }
+
+    return back()->with('success', 'Media uploaded successfully.');
+}
 }

@@ -118,6 +118,14 @@
                               rows="4">{{ old('description', $csvData['description'] ?? '') }}</textarea>
                 </div>
                     <div class="form-group col-md-4">
+                    <label>Project Type(Can be the same as project mode)</label>
+                    <select name="type" class="form-control" required>
+                        <option value="executing">Executing (We ran this project)</option>
+                        <option value="documenting">Documenting (We verified & archived)</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-4">
                     <label>Project Mode</label>
                     <select name="project_mode" class="form-control" required>
                         <option value="executing">Executing (We ran this project)</option>
@@ -181,14 +189,29 @@
                            step="0.01"
                            value="{{ old('estimated_budget', $csvData['estimated_budget'] ?? '') }}">
                 </div>
+                <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Contractor Fee(will be shared between contractors)</label>
+                        <input type="number"
+                        name="actual_cost"
+                        class="form-control"
+                        step="0.01"
+                        value="{{ old('actual_cost', $csvData['actual_cost'] ?? '') }}">
+                    </div>
+                </div>
+                    <div class="col">
 
-                <div class="form-group">
-                    <label>Contractor Fee</label>
-                    <input type="number"
-                           name="actual_cos"
-                           class="form-control"
-                           step="0.01"
-                           value="{{ old('actual_cost', $csvData['actual_cost'] ?? '') }}">
+                    <div class="form-group">
+                        <label>Number of Contractors</label>
+                        <input type="number"
+                        name="contractor_count"
+                        class="form-control"
+                        step="0.01"
+                        value="{{ old('contractor_count', $csvData['contractor_count'] ?? '') }}">
+                    </div>
+                    </div>
+
                 </div>
 
                 <hr>
@@ -314,7 +337,7 @@
         <label>Address</label>
         <input type="text" name="address" class="form-control">
     </div>
-    
+
     <div class="form-group">
         <label>State</label>
         <input type="text" name="state" class="form-control">

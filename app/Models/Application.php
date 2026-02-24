@@ -74,4 +74,13 @@ class Application extends Model
     {
         return $this->isPending() || $this->isApplied();
     }
+
+    protected $casts = [
+    'approved_at' => 'datetime',
+    'cancelled_at' => 'datetime',
+    'paid_at' => 'datetime',
+    'application_fee' => 'decimal:2',
+    'paid' => 'boolean',
+];
+
 }

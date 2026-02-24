@@ -36,6 +36,7 @@ return new class extends Migration
             $table->string('ward')->nullable();
             $table->string('community')->nullable();
             $table->string('address')->nullable();
+            $table->boolean('paid')->default(0);
 
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
