@@ -26,7 +26,7 @@
             <div class="row">
                 <div class="col-md-2 text-center">
                     @if($candidate->photo)
-                        <img src="{{ asset('storage/' . $candidate->photo) }}"
+                        <img src="{{ $candidate->photo_url }}"
                              class="rounded-circle img-fluid" style="width: 120px; height: 120px; object-fit: cover;">
                     @else
                         <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto"

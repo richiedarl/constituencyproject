@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'My Active Projects')
 
@@ -78,7 +78,7 @@
                 Browse available projects and apply as a contractor or make a contribution to get started.
             </p>
             <div class="d-flex justify-content-center gap-3">
-                <a href="{{ route('project.index') }}" class="btn btn-primary btn-lg px-5">
+                <a href="{{ route('projects.index') }}" class="btn btn-primary btn-lg px-5">
                     <i class="fas fa-search me-2"></i>
                     Browse Projects
                 </a>
@@ -214,7 +214,7 @@
                             <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
                                 <a href="{{ $project->user_role === 'contractor' ?
                                     route('contractor.my.projects.show', $project) :
-                                    route('projects.show', $project) }}"
+                                    route('project.public.show', $project->slug) }}"
                                    class="btn btn-outline-primary w-100">
                                     <i class="fas fa-eye me-2"></i>
                                     View Project Details

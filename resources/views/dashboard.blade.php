@@ -655,7 +655,7 @@
                             <div class="card">
                                 <div class="card-body text-center">
                                     @if($candidate->photo)
-                                        <img src="{{ asset('storage/' . $candidate->photo) }}"
+                                        <img src="{{ $candidate->photo_url }}"
                                              alt="{{ $candidate->name }}"
                                              class="rounded-circle mb-2"
                                              style="width: 80px; height: 80px; object-fit: cover;">

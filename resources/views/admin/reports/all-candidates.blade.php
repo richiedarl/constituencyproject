@@ -20,7 +20,7 @@
                         <div class="d-flex align-items-center mb-3">
                             <div class="me-3">
                                 <div class="rounded-circle bg-light overflow-hidden" style="width: 60px; height: 60px;">
-                                    <img src="{{ $candidate->photo ? asset('storage/'.$candidate->photo) : asset('images/avatar.png') }}"
+                                    <img src="{{ $candidate->photo_url }}"
                                          class="w-100 h-100" style="object-fit: cover;">
                                 </div>
                             </div>

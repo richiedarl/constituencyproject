@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class AdminDonationController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'admin']);
-    }
-
     /**
      * Show all donations
      */
@@ -69,11 +64,6 @@ class AdminDonationController extends Controller
         try {
             $donation->approved = true;
             $donation->save();
-
-            // Update project raised amount
-            $project = $donation->project;
-            $project->raised_amount = ($project->raised_amount ?? 0) + $donation->amount;
-            $project->save();
 
             DB::commit();
 

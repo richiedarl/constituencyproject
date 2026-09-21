@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'My Projects')
 
@@ -38,7 +38,7 @@
             </div>
             <h3 class="h4 text-muted mb-3">No Approved Projects Yet</h3>
             <p class="text-muted mb-4">You haven't been approved for any projects yet.</p>
-            <a href="{{ route('project.index') }}" class="btn btn-primary">
+            <a href="{{ route('projects.index') }}" class="btn btn-primary">
                 <i class="fas fa-search me-2"></i>
                 Browse Available Projects
             </a>

@@ -4,9 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\UserCandidateController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\PortfolioController;
 
-// Public Candidate Registration
-Route::get('/candidate/register', [CandidateController::class, 'register'])->name('candidate.register');
+// Candidate registration is handled through the authenticated user flow.
+Route::middleware('auth')->get('/candidate/register', [UserCandidateController::class, 'create'])
+    ->name('candidate.register');
 
 Route::middleware('auth')->prefix('user/candidates')->name('user.candidates.')
 ->group(function () {
@@ -38,12 +40,12 @@ Route::middleware(['auth'])->prefix('user/candidates')->name('user.candidates.')
 | Admin / Candidates
 |--------------------------------------------------------------------------
 */
-Route::prefix('candidates')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('candidates')->group(function () {
     Route::get('/all', [CandidateController::class, 'index'])->name('candidates.index.all');
     Route::get('/create', [CandidateController::class, 'create'])->name('candidates.create');
     Route::post('store', [CandidateController::class, 'store'])->name('candidates.store');
     Route::get('/{candidate}/edit', [CandidateController::class, 'edit'])->name('candidates.edit');
-    Route::post('/{candidate}/destroy', [CandidateController::class, 'destroy'])->name('candidates.destroy');
+    Route::delete('/{candidate}', [CandidateController::class, 'destroy'])->name('candidates.destroy');
     Route::put('/{candidate}', [CandidateController::class, 'update'])->name('candidates.update');
     Route::get('/{candidate}', [CandidateController::class, 'show'])->name('candidates.show');
 
@@ -62,11 +64,11 @@ Route::prefix('candidates')->group(function () {
     Route::post('/{candidate}/projects', [PortfolioController::class, 'attachProject'])->name('candidates.projects.attach');
 });
 
-Route::post('candidate/fund/{candidate}',[CandidateController::class, 'fund'])->name('admin.candidates.fund');
+Route::middleware(['auth', 'admin'])->post('candidate/fund/{candidate}', [CandidateController::class, 'fund'])
+    ->name('admin.candidates.fund');
 
 // This route is going to the same controller method as the candidates.store
 Route::get('/candidates', [IndexController::class, 'candidates'])->name('candidates.index');
 Route::get('/candidate/{slug}', [IndexController::class, 'candidateProfile'])->name('candidate.public.show');
 Route::get('/projects', [IndexController::class, 'projects'])->name('projects.index');
 Route::get('/project/{slug}', [IndexController::class, 'projectShow'])->name('project.public.show');
-

@@ -91,7 +91,7 @@
     <!-- Page Header -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <div>
-            <a href="{{ route('admin.contractors.index') }}" class="text-decoration-none mb-2 d-inline-block">
+            <a href="{{ route('contractors.index') }}" class="text-decoration-none mb-2 d-inline-block">
                 <i class="fas fa-arrow-left me-2"></i>Back to Contractors
             </a>
             <h1 class="h3 mb-0 text-gray-800">Add New Contractor</h1>
@@ -99,7 +99,7 @@
         </div>
     </div>
 
-    <form action="{{ route('admin.contractors.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('contractors.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <!-- User Selection Section -->
@@ -295,7 +295,7 @@
 
         <!-- Form Actions -->
         <div class="d-flex justify-content-end gap-2 mb-5">
-            <a href="{{ route('admin.contractors.index') }}" class="btn btn-secondary">
+            <a href="{{ route('contractors.index') }}" class="btn btn-secondary">
                 <i class="fas fa-times me-2"></i>Cancel
             </a>
             <button type="submit" class="btn btn-primary">

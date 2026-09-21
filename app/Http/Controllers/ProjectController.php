@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Candidate;
 use App\Models\Application;
+use App\Models\Donation;
 use App\Models\Project;
 use App\Models\ProjectMedia;
 use App\Models\ProjectPhase;
@@ -115,7 +116,7 @@ class ProjectController extends Controller
         }
     }
 
-public function userIndex()
+public function userIndex(Request $request)
 {
     $user = auth()->user();
 
@@ -132,11 +133,35 @@ public function userIndex()
     }
 
     // Start with base query for all active/public projects
-    $projects = Project::with(['candidate', 'phases'])
+    $projectQuery = Project::with(['candidate', 'phases'])
         ->active()
         ->public()
-        ->latest()
-        ->get();
+        ->when($request->filled('search'), function ($query) use ($request) {
+            $search = trim($request->input('search'));
+
+            $query->where(function ($query) use ($search) {
+                $query->where('title', 'like', "%{$search}%")
+                    ->orWhere('short_description', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('state', 'like', "%{$search}%")
+                    ->orWhere('lga', 'like', "%{$search}%")
+                    ->orWhere('community', 'like', "%{$search}%");
+            });
+        })
+        ->when($request->filled('status'), fn ($query) => $query->where('status', $request->input('status')))
+        ->when($request->filled('state'), fn ($query) => $query->where('state', $request->input('state')));
+
+    $projects = $projectQuery->latest()->paginate(12)->withQueryString();
+    $states = Project::active()
+        ->public()
+        ->whereNotNull('state')
+        ->distinct()
+        ->orderBy('state')
+        ->pluck('state');
+
+    if (!$user) {
+        return view('guest.projects.index', compact('projects', 'states'));
+    }
 
     // Add user-specific data if logged in
     if ($user) {
@@ -197,7 +222,7 @@ public function userMine()
     if ($user->contributor) {
 
         $projects = Project::whereHas('donations', function ($query) use ($user) {
-            $query->where('contributor_id', $user->id);
+            $query->where('contributor_id', $user->contributor->id);
         })
         ->with('donations')
         ->latest()
@@ -214,7 +239,7 @@ public function userPast()
     $user = auth()->user();
 
     if ($user->candidate) {
-        $projects = Project::where('user_id', $user->id)
+        $projects = Project::where('candidate_id', $user->candidate->id)
             ->whereIn('status', ['rejected', 'cancelled'])
             ->latest()
             ->get();
@@ -222,7 +247,7 @@ public function userPast()
 
     if ($user->contributor) {
         $projects = Project::whereHas('donations', function ($q) use ($user) {
-                $q->where('contributor_id', $user->id);
+                $q->where('contributor_id', $user->contributor->id);
             })
             ->whereIn('status', ['rejected', 'cancelled'])
             ->latest()
@@ -237,7 +262,7 @@ public function userCompleted()
     $user = auth()->user();
 
     if ($user->candidate) {
-        $projects = Project::where('user_id', $user->id)
+        $projects = Project::where('candidate_id', $user->candidate->id)
             ->where('status', 'completed')
             ->latest()
             ->get();
@@ -245,7 +270,7 @@ public function userCompleted()
 
     if ($user->contributor) {
         $projects = Project::whereHas('donations', function ($q) use ($user) {
-                $q->where('contributor_id', $user->id);
+                $q->where('contributor_id', $user->contributor->id);
             })
             ->where('status', 'completed')
             ->latest()
@@ -259,10 +284,29 @@ public function userShow(Project $project)
 {
     $user = auth()->user();
 
+    if ($project->is_public) {
+        $project->load(['phases.media', 'candidate']);
+
+        $totalDonations = $project->donations()->where('approved', true)->sum('amount');
+        $donationCount = $project->donations()->where('approved', true)->count();
+        $contributorsCount = $project->contributors()->count();
+
+        return view('guest.projects.show', compact(
+            'project',
+            'totalDonations',
+            'donationCount',
+            'contributorsCount'
+        ));
+    }
+
+    if (!$user) {
+        abort(404);
+    }
+
     // Authorization check
-    $isOwner = $project->candidate_id === $user->id;
+    $isOwner = $project->candidate_id === $user->candidate?->id;
     $isSponsor = $project->donations()
-        ->where('contributor_id', $user->id)
+        ->where('contributor_id', $user->contributor?->id)
         ->exists();
 
     if (!$isOwner && !$isSponsor) {
@@ -462,7 +506,7 @@ public function update(Request $request, Project $project)
         return back()->with('success', 'Media uploaded successfully.');
     }
 
-    public function show(Project $project)
+public function show(Project $project)
     {
         // Eager-load only what the accessors will use
         $project->load([
@@ -649,5 +693,13 @@ public function update(Request $request, Project $project)
     }
 
     return back()->with('success', 'Media uploaded successfully.');
+}
+
+public function destroy(Project $project)
+{
+    $project->delete();
+
+    return redirect()->route('admin.projects.index')
+        ->with('success', 'Project deleted successfully.');
 }
 }

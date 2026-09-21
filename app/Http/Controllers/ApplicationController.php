@@ -49,16 +49,15 @@ public function show(Application $application)
 {
     $user = Auth::user();
 
-    // Authorization check
-    if ($user->contractor && $application->contractor_id !== $user->contractor->id) {
-        abort(403);
-    }
+    $ownsAsContractor = $user->contractor
+        && $application->contractor_id === $user->contractor->id;
+    $ownsProject = $user->candidate
+        && Project::whereKey($application->project_id)
+            ->where('candidate_id', $user->candidate->id)
+            ->exists();
 
-    if ($user->candidate) {
-        $projectIds = Project::where('candidate_id', $user->candidate->id)->pluck('id');
-        if (!in_array($application->project_id, $projectIds->toArray())) {
-            abort(403);
-        }
+    if (! $user->admin && ! $ownsAsContractor && ! $ownsProject) {
+        abort(403);
     }
 
     // Load relationships
@@ -235,6 +234,8 @@ public function show(Application $application)
                 'contractor_id' => $contractor->id,
                 'project_id' => $project->id,
                 'status' => 'pending',
+                'cover_letter' => $request->cover_letter,
+                'expected_rate' => $request->expected_rate,
                 'applied_at' => now()
             ]);
 
@@ -257,7 +258,7 @@ public function show(Application $application)
     {
         // Check if user owns this application
         if (!$application->contractor || $application->contractor->user_id !== Auth::id()) {
-            return back()->with('error', 'Unauthorized action.');
+            abort(403);
         }
 
         if ($application->status !== 'pending') {

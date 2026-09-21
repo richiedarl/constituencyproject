@@ -9,14 +9,31 @@ class Contractor extends Model
         'user_id',
         'name',
         'slug',
+        'company_name',
         'email',
         'phone',
         'approved',
         'district',
         'gender',
         'occupation', // e.g., "skilled worker"
+        'experience_years',
+        'verified',
+        'verified_at',
+        'verified_by',
+        'suspended',
+        'suspended_at',
+        'suspended_by',
+        'suspension_reason',
         'bio',
         'photo',
+    ];
+
+    protected $casts = [
+        'approved' => 'boolean',
+        'verified' => 'boolean',
+        'verified_at' => 'datetime',
+        'suspended' => 'boolean',
+        'suspended_at' => 'datetime',
     ];
 
     public function user()

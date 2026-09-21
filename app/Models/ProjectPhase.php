@@ -42,7 +42,7 @@ class ProjectPhase extends Model
 
     public function updates()
     {
-        return $this->hasMany(Update::class);
+        return $this->hasMany(Update::class, 'phase_id');
     }
 
     /**

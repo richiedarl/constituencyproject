@@ -18,8 +18,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('reference');
             $table->text('description');
-            table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
-            $table->string('reference')->unique();
+            $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
             $table->json('metadata')->nullable();
             $table->timestamps();
         });

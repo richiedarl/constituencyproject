@@ -33,7 +33,7 @@
                     $totalDonated = $contributor->donations_sum_amount ?? 0;
                     $photoUrl = $contributor->photo
                         ? asset('storage/'.$contributor->photo)
-                        : asset('images/avatar.png');
+                        : asset('fe/assets/img/logo_current.webp');
                 @endphp
 
                 <div class="col-lg-4 col-md-6">

@@ -7,6 +7,9 @@ class Contributor extends Model
 {
     protected $fillable = [
         'user_id',
+        'name',
+        'email',
+        'phone',
         'slug',
         'district',
         'gender',

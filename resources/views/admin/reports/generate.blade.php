@@ -19,7 +19,7 @@
                         <div class="d-flex align-items-center mb-3">
                             <div class="flex-shrink-0">
                                 <div class="rounded-circle bg-light overflow-hidden" style="width: 50px; height: 50px;">
-                                    <img src="{{ $candidate->photo ? asset('storage/'.$candidate->photo) : asset('images/avatar.png') }}"
+                                    <img src="{{ $candidate->photo_url }}"
                                          class="w-100 h-100" style="object-fit: cover;">
                                 </div>
                             </div>
@@ -30,10 +30,10 @@
                         </div>
 
                         <div class="d-grid gap-2">
-                            <a href="{{ route('admin.reports.candidate', $candidate->id) }}" class="btn btn-primary">
+                            <a href="{{ route('report.candidate', $candidate->id) }}" class="btn btn-primary">
                                 <i class="fas fa-file-pdf me-2"></i>Generate Full Report
                             </a>
-                            <a href="{{ route('guest.reports.preview', $candidate->slug) }}" class="btn btn-outline-secondary" target="_blank">
+                            <a href="{{ route('candidate.report.preview', $candidate->slug) }}" class="btn btn-outline-secondary" target="_blank">
                                 <i class="fas fa-eye me-2"></i>Preview Public View
                             </a>
                         </div>

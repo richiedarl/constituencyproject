@@ -90,7 +90,7 @@ class AdminContractorController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.contractors.index')
+            return redirect()->route('contractors.index')
                 ->with('success', 'Contractor created successfully.');
 
         } catch (\Exception $e) {
@@ -171,7 +171,7 @@ class AdminContractorController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.contractors.index')
+            return redirect()->route('contractors.index')
                 ->with('success', 'Contractor updated successfully.');
 
         } catch (\Exception $e) {
@@ -198,7 +198,7 @@ class AdminContractorController extends Controller
 
             // Check if contractor has any approved applications
             if ($contractor->applications()->where('status', Application::STATUS_APPROVED)->exists()) {
-                return redirect()->route('admin.contractors.index')
+                return redirect()->route('contractors.index')
                     ->with('error', 'Cannot delete contractor with approved project assignments.');
             }
 
@@ -215,7 +215,7 @@ class AdminContractorController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.contractors.index')
+            return redirect()->route('contractors.index')
                 ->with('success', 'Contractor deleted successfully.');
 
         } catch (\Exception $e) {
@@ -226,7 +226,7 @@ class AdminContractorController extends Controller
                 'error' => $e->getMessage()
             ]);
 
-            return redirect()->route('admin.contractors.index')
+            return redirect()->route('contractors.index')
                 ->with('error', 'Failed to delete contractor. Please try again.');
         }
     }

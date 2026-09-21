@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\IndexController;
-use App\Http\Controllers\UserCandidateController;
 
-
-Route::post('/report/generate', [ReportController::class, 'generate'])->name('report.generate');
-Route::get('/report/candidate/{candidate}', [ReportController::class, 'show'])->name('report.candidate');
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::post('/report/generate', [ReportController::class, 'generateReportForm'])
+        ->name('report.generate');
+    Route::get('/report/candidate/{candidate}', [ReportController::class, 'adminCandidateReport'])
+        ->name('report.candidate');
+});
 
 
 /*
@@ -17,7 +17,7 @@ Route::get('/report/candidate/{candidate}', [ReportController::class, 'show'])->
 |--------------------------------------------------------------------------
 */
 // Report Routes (Contractor)
-Route::middleware(['auth'])->prefix('reports')->name('reports.')->group(function () {
+Route::middleware(['auth', 'contractor'])->prefix('reports')->name('reports.')->group(function () {
     Route::get('/', [ReportController::class, 'index'])->name('index');
     Route::get('/phases/{projectId}', [ReportController::class, 'getPhases'])->name('phases');
     Route::post('/store', [ReportController::class, 'storeReport'])->name('store');
@@ -33,7 +33,7 @@ Route::prefix('report/candidate/{slug}')->name('candidate.report.')->group(funct
     Route::post('/request', [ReportController::class, 'requestKey'])->name('request');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
 
     // ===== Report Key Management =====
 
@@ -73,12 +73,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reports/candidate/{candidate}', [ReportController::class, 'adminCandidateReport'])
         ->name('candidate.report');
 
-});
-
     // License Settings
     Route::get('/settings', [ReportController::class, 'licenseSettings'])->name('license.settings');
     Route::post('/settings', [ReportController::class, 'updateLicenseSettings'])->name('license.settings.update');
     Route::get('/logs', [ReportController::class, 'licenseLogs'])->name('license.logs');
+});
 
 // Admin Report Management
 Route::middleware(['auth', 'admin'])->prefix('submitted/reports')->name('submitted.reports.')->group(function () {

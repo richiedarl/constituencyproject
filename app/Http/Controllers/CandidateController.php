@@ -33,11 +33,11 @@ class CandidateController extends Controller
         // Basic info
         'title'     => 'nullable|string|max:20',
         'name'      => 'required|string|max:255',
-        'email'     => 'nullable|email',
+        'email'     => 'required|email|unique:users,email',
         'phone'     => 'nullable|string',
         'gender'    => 'nullable|string',
-        'district'  => 'nullable|string',
-        'state'  => 'nullable|string',
+        'district'  => 'required|string',
+        'state'  => 'required|string',
 
         // Media
         'photo'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -92,6 +92,7 @@ class CandidateController extends Controller
                 'password' => bcrypt('password')
             ]
         );
+        $user->forceFill(['candidate' => true, 'role' => 'candidate'])->save();
 
             /* ------------------------
             | Generate Unique Candidate Slug
@@ -113,6 +114,7 @@ class CandidateController extends Controller
                 'phone'    => $validated['phone'] ?? null,
                 'gender'   => $validated['gender'] ?? null,
                 'district' => $validated['district'] ?? null,
+                'state'    => $validated['state'],
                 'photo'    => $photoPath,
                 'user_id'  => $user->id
             ]);
@@ -156,8 +158,49 @@ class CandidateController extends Controller
     }
 
     return redirect()
-        ->route('candidates.index')
+        ->route('candidates.index.all')
         ->with('success', 'Candidate created successfully');
+}
+
+public function edit(Candidate $candidate)
+{
+    $candidate->load('positions');
+
+    return view('admin.candidates.edit', compact('candidate'));
+}
+
+public function update(Request $request, Candidate $candidate)
+{
+    $validated = $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'email', 'unique:candidates,email,' . $candidate->id],
+        'phone' => ['nullable', 'string', 'max:30'],
+        'district' => ['required', 'string', 'max:255'],
+        'state' => ['required', 'string', 'max:255'],
+        'gender' => ['nullable', 'in:male,female,other'],
+        'bio' => ['nullable', 'string', 'max:2000'],
+        'approved' => ['nullable', 'boolean'],
+        'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+    ]);
+
+    if ($request->hasFile('photo')) {
+        $validated['photo'] = $request->file('photo')->store('candidates', 'public');
+    }
+
+    $validated['approved'] = $request->boolean('approved');
+    $candidate->update($validated);
+    $candidate->user?->update(['name' => $candidate->name, 'email' => $candidate->email]);
+
+    return redirect()->route('candidates.show', $candidate)
+        ->with('success', 'Candidate updated successfully.');
+}
+
+public function destroy(Candidate $candidate)
+{
+    $candidate->delete();
+
+    return redirect()->route('candidates.index.all')
+        ->with('success', 'Candidate removed successfully.');
 }
 
 public function project_candidate_store(Request $request){

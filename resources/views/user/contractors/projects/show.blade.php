@@ -1,4 +1,5 @@
-@extends('layouts.admin')
+@extends('layouts.app')
+@if(false)
 
 @section('title', $project->title)
 
@@ -190,6 +191,7 @@
     </div>
 </div>
 @endsection
+@endif
 
 @extends('layouts.app')
 

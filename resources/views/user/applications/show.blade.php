@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Application Details')
 
@@ -54,9 +54,12 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Amount:</th>
-                            <td>₦{{ number_format($application->amount ?? 0) }}</td>
+                            <th>Proposed value:</th>
+                            <td>{{ $application->expected_rate !== null ? '₦'.number_format($application->expected_rate, 2) : 'Not specified' }}</td>
                         </tr>
+                        @if($application->cover_letter)
+                        <tr><th>Application statement:</th><td>{{ $application->cover_letter }}</td></tr>
+                        @endif
                         <tr>
                             <th>Applied On:</th>
                             <td>{{ $application->created_at->format('F d, Y h:i A') }}</td>

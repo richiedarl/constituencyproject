@@ -4,18 +4,22 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AdminApplicationController;
 
-Route::get('applications/admin/all', [AdminApplicationController::class, 'index'])
-            ->name('admin.applications.index');
+Route::middleware(['auth', 'admin'])->get('applications/admin/all', [AdminApplicationController::class, 'index'])
+    ->name('admin.applications.index');
 
 // All users Applications
-Route::get('/user/applications', [ApplicationController::class, 'index'])->name('user.applications.index');
-Route::get('/user/approved/applications', [ApplicationController::class, 'approved'])->name('applications.approved');
-Route::get('/user/pending/applications', [ApplicationController::class, 'pending'])->name('applications.pending');
-Route::get('/user/cancelled/applications', [ApplicationController::class, 'cancelled'])->name('applications.cancelled');
+Route::middleware('auth')->group(function () {
+    Route::get('/user/applications', [ApplicationController::class, 'index'])->name('user.applications.index');
+    Route::get('/user/applications/{application}', [ApplicationController::class, 'show'])->name('user.applications.show');
+    Route::delete('/user/applications/{application}', [ApplicationController::class, 'cancel'])->name('applications.cancel');
+    Route::get('/user/approved/applications', [ApplicationController::class, 'approved'])->name('applications.approved');
+    Route::get('/user/pending/applications', [ApplicationController::class, 'pending'])->name('applications.pending');
+    Route::get('/user/cancelled/applications', [ApplicationController::class, 'cancelled'])->name('applications.cancelled');
+});
 
 // Admin Applications Routes
-Route::get('/admin/application/all', [AdminApplicationController::class, 'index'])
-->name('fetch.all.applications');
+Route::middleware(['auth', 'admin'])->get('/admin/application/all', [AdminApplicationController::class, 'index'])
+    ->name('fetch.all.applications');
 
 // To AVOID ERRORS, I use submit as prefix if necessary
 Route::middleware(['auth', 'admin'])->prefix('submit')->group(function () {

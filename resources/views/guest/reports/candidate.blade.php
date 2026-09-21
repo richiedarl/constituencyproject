@@ -22,7 +22,7 @@
         <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
             <div class="row">
                 <div class="col-md-3 text-center">
-                    <img src="{{ $candidate->photo ? asset('storage/'.$candidate->photo) : asset('images/avatar.png') }}"
+                    <img src="{{ $candidate->photo_url }}"
                          class="rounded-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
                 </div>
                 <div class="col-md-9">

@@ -8,7 +8,7 @@
         <div class="d-flex align-items-center mb-3 mb-md-0">
             <div class="position-relative">
                 <img
-                    src="{{ $candidate->photo ? asset('storage/'.$candidate->photo) : asset('images/avatar.png') }}"
+                    src="{{ $candidate->photo_url }}"
                     class="rounded-circle border border-4 border-white shadow-sm"
                     width="80"
                     height="80"
@@ -44,7 +44,7 @@
                 <i class="fas fa-coins mr-2"></i>
                 Fund Candidate
             </button>
-            <a href="{{ route('admin.candidates.report', $candidate->id) }}"
+            <a href="{{ route('report.candidate', $candidate->id) }}"
                class="btn btn-outline-primary btn-lg shadow-sm">
                 <i class="fas fa-chart-bar mr-2"></i>
                 View Report

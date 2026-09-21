@@ -121,6 +121,8 @@
     </div>
 </div>
 
+@endsection
+
 @push('scripts')
 <script>
 function approveRequest(id) {

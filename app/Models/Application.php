@@ -21,6 +21,9 @@ class Application extends Model
         'project_id',
         'contractor_id',
         'status',
+        'cover_letter',
+        'expected_rate',
+        'applied_at',
         'approved_at',
         'approved_by',
         'cancelled_at',
@@ -77,6 +80,8 @@ class Application extends Model
 
     protected $casts = [
     'approved_at' => 'datetime',
+    'applied_at' => 'datetime',
+    'expected_rate' => 'decimal:2',
     'cancelled_at' => 'datetime',
     'paid_at' => 'datetime',
     'application_fee' => 'decimal:2',

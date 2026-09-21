@@ -35,13 +35,36 @@
 You have already applied to this project.
 </div>
 
-<a href="{{ route('projects.show', $project) }}"
+<a href="{{ route('project.public.show', $project->slug) }}"
    class="btn btn-secondary w-100">
 Return To Project
 </a>
 
 @else
 
+@if(($project ?? false) && $contractor)
+    @if(!$contractor->approved || !$contractor->verified)
+        <div class="alert alert-warning" role="status">
+            <strong>Verification required.</strong> Your profile is saved, but an administrator must verify it before you can submit a project application.
+        </div>
+        <a href="{{ route('contractor.profile') }}" class="btn btn-outline-primary w-100">Review contractor profile</a>
+    @else
+        <form method="POST" action="{{ route('contractor.projects.apply', $project) }}">
+            @csrf
+            <div class="mb-3">
+                <label for="cover_letter" class="form-label">Application statement</label>
+                <textarea id="cover_letter" name="cover_letter" rows="6" maxlength="2000" class="form-control @error('cover_letter') is-invalid @enderror" placeholder="Summarise your relevant experience and delivery approach.">{{ old('cover_letter') }}</textarea>
+                @error('cover_letter')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="mb-4">
+                <label for="expected_rate" class="form-label">Proposed contract value (optional)</label>
+                <div class="input-group"><span class="input-group-text">₦</span><input id="expected_rate" name="expected_rate" type="number" min="0" step="0.01" value="{{ old('expected_rate') }}" class="form-control @error('expected_rate') is-invalid @enderror"></div>
+                @error('expected_rate')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+            </div>
+            <button class="btn btn-warning w-100" type="submit">Submit application</button>
+        </form>
+    @endif
+@else
     <form method="POST"
                      action="{{ route('contractor.store') }}"
                      enctype="multipart/form-data">
@@ -248,7 +271,7 @@ Return To Project
         {{-- PROFILE EXISTS --}}
         <div class="alert alert-light border">
             <strong>{{ $contractor->company_name ?? 'No Company Name' }}</strong><br>
-            {{ $contractor->specialization }} •
+            {{ $contractor->occupation }} &bull;
             {{ $contractor->experience_years }} yrs experience
         </div>
 
@@ -270,6 +293,7 @@ Return To Project
     </button>
 
 </form>
+@endif
 
 
 

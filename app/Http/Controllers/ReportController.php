@@ -52,12 +52,6 @@ public function index()
         ->limit(5)
         ->get();
 
-    // Debug: Uncomment to see what's being fetched
-    dd([
-        'updates_count' => $recentUpdates->count(),
-        'updates' => $recentUpdates->toArray()
-    ]);
-
     return view('user.contractors.reports.index', compact('projects', 'recentUpdates', 'user'));
 }
 
@@ -144,7 +138,14 @@ public function storeReport(Request $request)
 
     try {
         // Get the phase to access its name for better description
-        $phase = ProjectPhase::find($request->phase_id);
+        $phase = ProjectPhase::whereKey($request->phase_id)
+            ->where('project_id', $request->project_id)
+            ->first();
+
+        if (! $phase) {
+            DB::rollBack();
+            return back()->withErrors(['phase_id' => 'The selected phase does not belong to this project.']);
+        }
 
         // Create the update with contractor_id
         $update = Update::create([
@@ -730,7 +731,7 @@ public function approveReport(Update $update)
 
         DB::commit();
 
-        return redirect()->route('submmitted.reports.pending')
+        return redirect()->route('submitted.reports.pending')
             ->with('success', 'Report approved successfully!');
 
     } catch (\Exception $e) {
@@ -764,7 +765,7 @@ public function rejectReport(Request $request, Update $update)
 
         DB::commit();
 
-        return redirect()->route('admin.reports.pending')
+        return redirect()->route('submitted.reports.pending')
             ->with('success', 'Report rejected successfully.');
 
     } catch (\Exception $e) {
@@ -773,4 +774,3 @@ public function rejectReport(Request $request, Update $update)
     }
 }
     }
-

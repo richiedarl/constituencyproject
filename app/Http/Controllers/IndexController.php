@@ -209,7 +209,10 @@ public function home()
         ->withSum(['donations' => function($query) {
             $query->where('approved', true);
         }], 'amount')
-        ->having('donations_sum_amount', '>', 0) // Only those with donations
+        ->whereHas('donations', function($query) {
+            $query->where('approved', true)
+                ->where('amount', '>', 0);
+        })
         ->orderByDesc('donations_sum_amount')
         ->take(10)
         ->get();
@@ -285,6 +288,8 @@ public function home()
         'featuredCandidates'
     ));
 }
+
+
     /**
      * Display list of all contributors
      */
@@ -453,15 +458,35 @@ public function contributorProfile($slug = null, $id = null)
     /**
      * Display list of all projects
      */
-    public function projects()
+    public function projects(Request $request)
     {
-        $projects = Project::active()
+        $query = Project::active()
             ->public()
             ->with(['candidate', 'phases'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = trim($request->string('search'));
 
-        return view('projects.index', compact('projects'));
+                $query->where(function ($query) use ($search) {
+                    $query->where('title', 'like', "%{$search}%")
+                        ->orWhere('short_description', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhere('state', 'like', "%{$search}%")
+                        ->orWhere('lga', 'like', "%{$search}%")
+                        ->orWhere('community', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->filled('status'), fn ($query) => $query->where('status', $request->string('status')))
+            ->when($request->filled('state'), fn ($query) => $query->where('state', $request->string('state')));
+
+        $projects = $query->latest()->paginate(12)->withQueryString();
+        $states = Project::active()
+            ->public()
+            ->whereNotNull('state')
+            ->distinct()
+            ->orderBy('state')
+            ->pluck('state');
+
+        return view('guest.projects.index', compact('projects', 'states'));
     }
 
     /**
@@ -507,7 +532,7 @@ public function contributorProfile($slug = null, $id = null)
             }
         }
 
-        return view('projects.show', compact(
+        return view('guest.projects.show', compact(
             'project',
             'totalDonations',
             'donationCount',

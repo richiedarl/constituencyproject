@@ -28,7 +28,7 @@
 
                         <!-- Candidate Image -->
                         <div class="position-relative" style="height: 250px; overflow: hidden;">
-                            <img src="{{ $candidate->photo ? asset('storage/'.$candidate->photo) : asset('images/avatar.png') }}"
+                            <img src="{{ $candidate->photo_url }}"
                                  alt="{{ $candidate->name }}"
                                  class="w-100 h-100"
                                  style="object-fit: cover;">

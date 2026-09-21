@@ -236,17 +236,25 @@ public function rejectWithdrawal(Request $request)
             ->limit(10)
             ->get();
 
-        $monthlyStats = Transaction::select(
-            DB::raw('MONTH(created_at) as month'),
-            DB::raw('YEAR(created_at) as year'),
-            DB::raw('SUM(CASE WHEN type = "credit" AND status = "completed" THEN amount ELSE 0 END) as total_credits'),
-            DB::raw('SUM(CASE WHEN type = "withdrawal" AND status = "completed" THEN amount ELSE 0 END) as total_withdrawals')
-        )
-        ->whereYear('created_at', date('Y'))
-        ->groupBy('year', 'month')
-        ->orderBy('year', 'desc')
-        ->orderBy('month', 'desc')
-        ->get();
+        $monthlyStats = Transaction::whereYear('created_at', date('Y'))
+            ->get(['type', 'status', 'amount', 'created_at'])
+            ->groupBy(fn (Transaction $transaction) => $transaction->created_at->format('m'))
+            ->map(function ($transactions, $month) {
+                return (object) [
+                    'month' => (int) $month,
+                    'year' => (int) date('Y'),
+                    'total_credits' => $transactions
+                        ->where('type', 'credit')
+                        ->where('status', 'completed')
+                        ->sum('amount'),
+                    'total_withdrawals' => $transactions
+                        ->where('type', 'withdrawal')
+                        ->where('status', 'completed')
+                        ->sum('amount'),
+                ];
+            })
+            ->sortByDesc('month')
+            ->values();
 
         return view('admin.wallet.summary', compact('totalBalance', 'totalUsers', 'averageBalance', 'topWallets', 'monthlyStats'));
     }

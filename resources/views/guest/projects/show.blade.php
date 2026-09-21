@@ -23,7 +23,7 @@
             <div class="col-lg-8">
                 <!-- Main Image -->
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
-                    <img src="{{ asset('storage/'.$project->featured_image) }}" class="card-img-top rounded-4" alt="{{ $project->title }}">
+                    <img src="{{ $project->featured_image ? asset('storage/'.$project->featured_image) : asset('fe/assets/img/about/community-led.jpg') }}" class="card-img-top rounded-4" alt="{{ $project->title }}">
                 </div>
 
                 <!-- Project Info -->
@@ -36,7 +36,7 @@
                             <p><i class="bi bi-calendar me-2" style="color: #ffc107;"></i> Started: {{ $project->start_date?->format('M Y') ?? 'N/A' }}</p>
                         </div>
                         <div class="col-md-6">
-                            <p><i class="bi bi-person-circle me-2" style="color: #29a221;"></i> Candidate: {{ $project->candidate->name }}</p>
+                            <p><i class="bi bi-person-circle me-2" style="color: #29a221;"></i> Candidate: {{ $project->candidate?->name ?? 'Not assigned' }}</p>
                             <p><i class="bi bi-tag me-2" style="color: #ffc107;"></i> Status: <span class="badge bg-success">{{ ucfirst($project->status) }}</span></p>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                     <h4 class="fw-bold mb-4">Project Phases</h4>
                     @foreach($project->phases as $phase)
                         <div class="phase-item mb-4 pb-4 border-bottom">
-                            <h5>{{ $phase->name }}</h5>
+                            <h5>{{ ucfirst($phase->phase) }}</h5>
                             <p class="text-muted">{{ $phase->description }}</p>
 
                             @if($phase->media->count() > 0)
@@ -97,7 +97,7 @@
                     </div>
 
                     @if($project->is_active)
-                        <a href="{{ route('contributor.project.apply', $project->id) }}" class="btn btn-lg w-100 py-3 rounded-3" style="background: linear-gradient(135deg, #29a221 0%, #ffc107 100%); color: white;">
+                        <a href="{{ route('contributor.project.apply', $project->id) }}" class="btn btn-lg w-100 py-3 rounded-3" style="background: #075A2A; color: white;">
                             Support This Project
                         </a>
                     @endif

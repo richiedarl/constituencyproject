@@ -36,8 +36,8 @@
 
             <img
                 src="{{ $project->candidate?->photo
-                    ? asset('storage/'.$project->candidate->photo)
-                    : asset('images/avatar.png') }}"
+                    ? $project->candidate->photo_url
+                    : asset('fe/assets/img/logo_current.webp') }}"
                 class="rounded-circle"
                 width="90"
                 height="90"

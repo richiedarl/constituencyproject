@@ -6,7 +6,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\UserContributorController;
 
 // Admin Contributors
-Route::get('/admin/contributors/adminIndex', [ContributorController::class, 'adminIndex'])->name('admin.contributors.index');
+Route::middleware(['auth', 'admin'])->get('/admin/contributors/adminIndex', [ContributorController::class, 'adminIndex'])->name('admin.contributors.index');
 
 
 // Contributor Registration
@@ -20,6 +20,7 @@ Route::get('/contributor/apply', [UserContributorController::class, 'apply'])
 
 // routes/web.php
 Route::post('/contributor/save/apply', [UserContributorController::class, 'saveApplyToProject'])
+    ->middleware('auth')
     ->name('contributor.apply.save');
 
 // Contributor Projects

@@ -10,7 +10,7 @@
                 </div>
                 <div class="card-body text-center">
                     @if($candidate->photo)
-                        <img src="{{ asset('storage/' . $candidate->photo) }}"
+                        <img src="{{ $candidate->photo_url }}"
                              alt="{{ $candidate->name }}"
                              class="rounded-circle mb-3"
                              style="width: 150px; height: 150px; object-fit: cover;">
@@ -24,7 +24,7 @@
                     <h5>{{ $candidate->name }}</h5>
                     <p class="text-muted">{{ $candidate->email }}</p>
 
-                    <a href="{{ route('candidates.edit', $candidate->id) }}" class="btn btn-outline-primary btn-sm">
+                    <a href="{{ route('user.candidates.edit', $candidate) }}" class="btn btn-outline-primary btn-sm">
                         Edit Profile
                     </a>
                 </div>
@@ -44,7 +44,7 @@
                 <div class="card-body">
                     @if($applications->isEmpty())
                         <p class="text-muted">You haven't submitted any applications yet.</p>
-                        <a href="{{ route('candidates.projects.create', $candidate->id) }}" class="btn btn-success">
+                        <a href="{{ route('user.candidates.projects.create', $candidate->id) }}" class="btn btn-success">
                             Start New Application
                         </a>
                     @else
@@ -60,7 +60,7 @@
                                 <tbody>
                                     @foreach($applications as $application)
                                         <tr>
-                                            <td>{{ $application->project->title }}</td>
+                                            <td>{{ $application->project?->title ?? 'Candidate registration' }}</td>
                                             <td>
                                                 @if($application->status == 'approved')
                                                     <span class="badge bg-success">Approved</span>

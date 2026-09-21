@@ -12,7 +12,7 @@
                 <p class="text-white opacity-90 mb-0">Projects you've successfully completed</p>
             </div>
             <div>
-                <a href="{{ route('contractor.dashboard') }}" class="btn btn-outline-light">
+                <a href="{{ route('contractor.my.projects') }}" class="btn btn-outline-light">
                     <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
                 </a>
             </div>
@@ -170,7 +170,7 @@
                                         <div class="d-flex align-items-center mb-3 p-2 rounded-3" style="background: rgba(41, 162, 33, 0.03);">
                                             <div class="me-2">
                                                 @if($project->candidate && $project->candidate->photo)
-                                                    <img src="{{ asset('storage/'.$project->candidate->photo) }}"
+                                                    <img src="{{ $project->candidate->photo_url }}"
                                                          class="rounded-circle"
                                                          style="width: 30px; height: 30px; object-fit: cover;">
                                                 @else
@@ -188,7 +188,7 @@
 
                                         <!-- Action Buttons -->
                                         <div class="d-flex gap-2">
-                                            <a href="{{ route('user.projects.show', $project->slug) }}"
+                                            <a href="{{ route('project.public.show', $project->slug) }}"
                                                class="btn flex-fill py-2 rounded-3"
                                                style="border: 1px solid #29a221; color: #29a221; background: white; transition: all 0.3s ease;"
                                                onmouseover="this.style.background='#29a221'; this.style.color='white';"

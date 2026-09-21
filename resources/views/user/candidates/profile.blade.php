@@ -32,7 +32,7 @@
                     <div class="profile-image-wrapper mx-auto mb-4">
                         <div class="rounded-circle p-1 d-inline-block" style="border: 3px solid #29a221;">
                             <div class="rounded-circle overflow-hidden" style="width: 150px; height: 150px; border: 3px solid #ffc107;">
-                                <img src="{{ $candidate->photo ? asset('storage/'.$candidate->photo) : asset('images/avatar.png') }}"
+                                <img src="{{ $candidate->photo_url }}"
                                      alt="{{ $candidate->name }}"
                                      class="w-100 h-100"
                                      style="object-fit: cover;">
@@ -153,7 +153,7 @@
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center mt-2">
                                         <span class="small">{{ $project->phases->count() }} phases</span>
-                                        <a href="{{ route('user.projects.show', $project->slug) }}" class="btn btn-sm" style="color: #29a221;">
+                                        <a href="{{ route('project.public.show', $project->slug) }}" class="btn btn-sm" style="color: #29a221;">
                                             View <i class="bi bi-arrow-right"></i>
                                         </a>
                                     </div>
@@ -180,7 +180,7 @@
                                         <h6 class="fw-bold mb-1">{{ $project->title }}</h6>
                                         <small class="text-muted">{{ $project->full_location }}</small>
                                     </div>
-                                    <a href="{{ route('user.projects.show', $project->slug) }}" class="btn btn-sm btn-outline-success">
+                                    <a href="{{ route('project.public.show', $project->slug) }}" class="btn btn-sm btn-outline-success">
                                         View
                                     </a>
                                 </div>

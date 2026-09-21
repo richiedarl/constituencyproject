@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Candidate Report - ' . $candidate->name)
 
@@ -14,7 +14,7 @@
             <button onclick="window.print()" class="btn btn-primary">
                 <i class="fas fa-print me-2"></i>Print Report
             </button>
-            <a href="{{ route('admin.candidates.index') }}" class="btn btn-secondary">
+            <a href="{{ route('candidates.index.all') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left me-2"></i>Back
             </a>
         </div>
@@ -26,7 +26,7 @@
             <div class="row">
                 <div class="col-md-2 text-center">
                     @if($candidate->photo)
-                        <img src="{{ asset('storage/' . $candidate->photo) }}"
+                        <img src="{{ $candidate->photo_url }}"
                              class="rounded-circle img-fluid" style="width: 120px; height: 120px; object-fit: cover;">
                     @else
                         <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto"

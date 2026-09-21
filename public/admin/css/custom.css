@@ -23,3 +23,111 @@
         width: 100%;
     }
 }
+
+/* Shared institutional visual language for authenticated surfaces */
+:root {
+    --cp-primary: #075A2A;
+    --cp-deep: #063D22;
+    --cp-fresh: #2E8B45;
+    --cp-muted: #F4F6F4;
+    --cp-border: #dfe7e1;
+}
+
+body {
+    color: #425149;
+    background: #F4F6F4;
+}
+
+#content-wrapper,
+#content {
+    background: #F4F6F4;
+}
+
+.card,
+.modal-content,
+.dropdown-menu {
+    border: 1px solid var(--cp-border) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 16px rgba(6, 61, 34, 0.06) !important;
+}
+
+.card-header,
+.card-footer {
+    background: #ffffff !important;
+    border-color: var(--cp-border) !important;
+}
+
+.btn {
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.btn-primary,
+.bg-primary {
+    background-color: var(--cp-primary) !important;
+    border-color: var(--cp-primary) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: var(--cp-deep) !important;
+    border-color: var(--cp-deep) !important;
+}
+
+.btn-outline-primary {
+    color: var(--cp-primary);
+    border-color: var(--cp-primary);
+}
+
+.btn-outline-primary:hover {
+    color: #ffffff;
+    background: var(--cp-primary);
+    border-color: var(--cp-primary);
+}
+
+.bg-success,
+.progress-bar.bg-success {
+    background-color: var(--cp-fresh) !important;
+}
+
+.badge {
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.form-control,
+.form-select {
+    min-height: 42px;
+    border-color: #cbd8cf;
+    border-radius: 4px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--cp-fresh);
+    box-shadow: 0 0 0 3px rgba(46, 139, 69, 0.14);
+}
+
+.table thead th {
+    color: var(--cp-deep);
+    background: var(--cp-muted);
+    border-bottom: 2px solid var(--cp-border);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.15rem;
+    }
+
+    .h1, h1 {
+        font-size: 1.75rem;
+    }
+}

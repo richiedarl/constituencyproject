@@ -15,6 +15,22 @@ use App\Models\{
 
 class UserContributorController extends Controller
 {
+    public function applyToProject(Project $project)
+    {
+        return $this->apply($project);
+    }
+
+    public function myProjects()
+    {
+        $contributor = Contributor::where('user_id', auth()->id())->firstOrFail();
+        $projects = Project::whereHas('donations', fn ($query) => $query->where('contributor_id', $contributor->id))
+            ->with(['candidate', 'phases', 'donations' => fn ($query) => $query->where('contributor_id', $contributor->id)])
+            ->latest()
+            ->get();
+
+        return view('user.projects.mine', compact('projects'));
+    }
+
     /**
      * Show the appropriate form based on context:
      * - If project is provided: Show contribution form for that project
@@ -92,17 +108,20 @@ class UserContributorController extends Controller
         // Create contributor profile
         $contributor = Contributor::create([
             'user_id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
             'slug' => Str::slug($user->name . '-' . uniqid()),
             'bio' => $request->bio,
             'district' => $request->district,
             'gender' => $request->gender,
             'photo' => $photoPath,
         ]);
+        $user->forceFill(['contributor' => true, 'role' => 'contributor'])->save();
 
         // Create wallet
         Wallet::firstOrCreate(
             ['user_id' => $user->id],
-            ['balance' => 0]
+            ['contributor_id' => $contributor->id, 'balance' => 0]
         );
 
         return redirect()->route('dashboard')
@@ -118,17 +137,20 @@ class UserContributorController extends Controller
         $contributor = Contributor::firstOrCreate(
             ['user_id' => $user->id],
             [
+                'name' => $user->name,
+                'email' => $user->email,
                 'slug' => Str::slug($user->name . '-' . uniqid()),
                 'bio' => $request->bio ?? 'New contributor',
                 'district' => $request->district ?? 'Not specified',
                 'gender' => $request->gender ?? 'other',
             ]
         );
+        $user->forceFill(['contributor' => true, 'role' => 'contributor'])->save();
 
         // Ensure wallet exists
         $wallet = Wallet::firstOrCreate(
             ['user_id' => $user->id],
-            ['balance' => 0]
+            ['contributor_id' => $contributor->id, 'balance' => 0]
         );
 
         // Prevent contributing to own project
@@ -142,19 +164,21 @@ class UserContributorController extends Controller
             'payment_method' => 'required|in:wallet,bank',
         ]);
 
-        // Create donation record
-        $donation = Donation::create([
-            'contributor_id' => $contributor->id,
-            'project_id' => $project->id,
-            'amount' => $request->amount,
-            'approved' => false, // admin approval required
-        ]);
-
         // Handle wallet payment
         if ($request->payment_method === 'wallet') {
             if ($wallet->balance < $request->amount) {
                 return back()->with('error', 'Insufficient wallet balance. Please fund your wallet first.');
             }
+        }
+
+        $donation = Donation::create([
+            'contributor_id' => $contributor->id,
+            'project_id' => $project->id,
+            'amount' => $request->amount,
+            'approved' => false,
+        ]);
+
+        if ($request->payment_method === 'wallet') {
 
             $wallet->decrement('balance', $request->amount);
 

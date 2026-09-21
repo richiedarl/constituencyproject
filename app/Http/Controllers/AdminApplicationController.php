@@ -13,6 +13,7 @@ use App\Models\Wallet;
 use App\Models\Transaction;
 use App\Models\Detail;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\AccountNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -109,7 +110,7 @@ public function approve(Application $application)
     }
 
     // 🔒 Ensure payment confirmed
-    if (!$application->candidate->paid) {
+    if ($application->candidate && !$application->candidate->paid) {
         return back()->with('error', 'Candidate has not completed payment.');
     }
 
@@ -119,57 +120,28 @@ public function approve(Application $application)
 
         $application->status = 'approved';
         $application->approved_at = now();
+        $application->approved_by = Auth::id();
         $application->save();
 
-        // Handle based on type
-        if ($application->type === 'candidate' && $application->candidate) {
-
-            $application->candidate->approved = true;
-            $application->candidate->save();
-
-            if ($application->paid) {
-
-                // Prevent double credit
-                $existingTransaction = Transaction::where('reference', 'app_fee_'.$application->id)->first();
-
-                if (!$existingTransaction) {
-
-                    $admin = User::find(1);
-
-                    $admin->wallet_balance += $application->application_fee;
-                    $admin->save();
-
-                    $application->project->update([
-                        "is_active" => 1
-                    ]);
-
-                    Transaction::create([
-                        'user_id' => 1,
-                        'amount' => $application->application_fee,
-                        'type' => 'credit',
-                        'reference' => 'app_fee_'.$application->id,
-                        'description' => 'Candidate Application Fee'
-                    ]);
-                }
-            }
-        }
-
-        if ($application->type === 'contractor' && $application->contractor) {
+        if ($application->contractor) {
             $application->contractor->approved = true;
             $application->contractor->save();
         }
 
-        if ($application->type === 'contributor' && $application->contributor) {
-            $application->contributor->approved = true;
-            $application->contributor->save();
-        }
-
-        if ($application->type === 'candidate' && $application->candidate) {
+        if ($application->candidate) {
             $application->candidate->approved = true;
             $application->candidate->save();
+            $application->project?->update(['is_active' => true]);
         }
 
         DB::commit();
+
+        $application->contractor?->user?->notify(new AccountNotification(
+            'Project application approved',
+            'Your application for '.($application->project?->title ?? 'a project').' was approved.',
+            route('user.applications.show', $application),
+            'success'
+        ));
 
         return back()->with('success', 'Application approved successfully.');
 
@@ -180,5 +152,40 @@ public function approve(Application $application)
     }
 }
 
+public function reject(Request $request, Application $application)
+{
+    $validated = $request->validate([
+        'reason' => ['nullable', 'string', 'max:1000'],
+    ]);
+
+    if ($application->status === Application::STATUS_APPROVED) {
+        return back()->with('error', 'An approved application cannot be rejected.');
+    }
+
+    $application->update([
+        'status' => Application::STATUS_REJECTED,
+        'cancelled_at' => now(),
+        'cancelled_by' => Auth::id(),
+        'cancellation_reason' => $validated['reason'] ?? 'Rejected by administrator',
+    ]);
+
+    $application->contractor?->user?->notify(new AccountNotification(
+        'Project application not approved',
+        'Your application for '.($application->project?->title ?? 'a project').' was not approved.',
+        route('user.applications.show', $application),
+        'warning'
+    ));
+
+    return back()->with('success', 'Application rejected successfully.');
+}
+
+private function getStatusBadge(string $status): string
+{
+    return match ($status) {
+        Application::STATUS_APPROVED => 'success',
+        Application::STATUS_REJECTED, Application::STATUS_CANCELLED => 'danger',
+        default => 'warning',
+    };
+}
 
 }

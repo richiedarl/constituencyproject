@@ -73,9 +73,7 @@
                                     <div class="d-flex align-items-center">
 
                                         <img
-                                            src="{{ $candidate->photo
-                                                ? asset('storage/'.$candidate->photo)
-                                                : asset('images/avatar.png') }}"
+                                            src="{{ $candidate->photo_url }}"
                                             width="40"
                                             height="40"
                                             class="rounded-circle mr-2"
@@ -112,10 +110,6 @@
                                         class="btn btn-sm btn-outline-primary">
                                         View
                                     </a>
-                                    <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#fundWalletModal">
-                                        <i class="fas fa-coins mr-1"></i> Fund Wallet
-                                    </button>
-
                                     <a
                                         href="{{ route('candidates.edit', $candidate->id) }}"
                                         class="btn btn-sm btn-outline-secondary">
@@ -167,9 +161,10 @@
     </div>
 
 </div>
+@if($candidates->isNotEmpty())
 <div class="modal fade" id="fundWalletModal">
     <div class="modal-dialog">
-        <form method="POST" action="{{ route('admin.candidates.fund', $candidate) }}">
+        <form method="POST" action="{{ route('admin.candidates.fund', $candidates->first()) }}">
             @csrf
 
             <div class="modal-content">
@@ -192,5 +187,6 @@
         </form>
     </div>
 </div>
+@endif
 
 @endsection

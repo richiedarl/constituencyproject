@@ -13,16 +13,16 @@
   --background-color: #ffffff; /* Background color for the entire website, including individual sections */
   --default-color: #666666; /* Default color used for the majority of the text content across the entire website */
   --heading-color: #000000; /* Color for headings, subheadings and title throughout the website */
-  --accent-color: #29a221; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
+  --accent-color: #075A2A; /* Primary institutional green for actions and key links */
   --surface-color: #ffffff; /* The surface color is used as a background of boxed elements within sections, such as cards, icon boxes, or other elements that require a visual separation from the global background. */
   --contrast-color: #ffffff; /* Contrast color for text, ensuring readability against backgrounds of accent, heading, or default colors. */
-   --secondary-color: #ffc107 /* This color goes with the var(--accent-color) as the secondary color of the website and project */
+  --secondary-color: #2E8B45; /* Supporting green for restrained accents */
 }
 
 /* Nav Menu Colors - The following color variables are used specifically for the navigation menu. They are separate from the global colors to allow for more customization options */
 :root {
   --nav-color: #999999;  /* The default color of the main navmenu links */
-  --nav-hover-color: #29a221; /* Applied to main navmenu links when they are hovered over or active */
+  --nav-hover-color: #075A2A; /* Applied to main navmenu links when they are hovered over or active */
   --nav-mobile-background-color: #ffffff; /* Used as the background color for mobile navigation menu */
   --nav-dropdown-background-color: #ffffff; /* Used as the background color for dropdown items that appear when hovering over primary navigation items */
   --nav-dropdown-color: #666666; /* Used for navigation links of the dropdown items in the navigation menu. */
@@ -2826,6 +2826,255 @@ section,
     margin-bottom: 24px;
   }
 
+}
+
+/* Civic platform visual system */
+:root {
+  --background-color: #ffffff;
+  --surface-color: #ffffff;
+  --surface-muted: #F4F6F4;
+  --border-color: #dfe7e1;
+  --default-color: #425149;
+  --heading-color: #173226;
+  --accent-color: #075A2A;
+  --deep-green: #063D22;
+  --secondary-color: #2E8B45;
+  --contrast-color: #ffffff;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --shadow-sm: 0 4px 16px rgba(6, 61, 34, 0.06);
+}
+
+body {
+  background: var(--background-color);
+  color: var(--default-color);
+  line-height: 1.65;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--heading-color);
+  letter-spacing: 0;
+}
+
+.header,
+.header.scrolled {
+  --background-color: #ffffff;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 12px rgba(6, 61, 34, 0.05);
+  padding: 10px 0;
+}
+
+.header .logo img {
+  width: auto;
+  max-width: 150px;
+  max-height: 58px;
+  object-fit: contain;
+}
+
+.navmenu a,
+.navmenu a:focus {
+  color: #496055;
+  font-weight: 500;
+}
+
+.navmenu li:hover > a,
+.navmenu .active,
+.navmenu .active:focus {
+  color: var(--accent-color);
+}
+
+.navmenu li:hover > a::after,
+.navmenu .active::after {
+  background: var(--secondary-color);
+}
+
+.navmenu .dropdown ul {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.mobile-nav-toggle {
+  color: var(--accent-color);
+}
+
+.btn,
+.btn-primary,
+.btn-success,
+.submit-btn,
+.hero .hero-cta .btn-primary,
+.about .cta-section .btn-primary {
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  line-height: 1.25;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary,
+.btn-success,
+.hero .hero-cta .btn-primary,
+.about .cta-section .btn-primary,
+.contact .submit-btn {
+  background: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+  color: #ffffff !important;
+}
+
+.btn-primary:hover,
+.btn-success:hover,
+.hero .hero-cta .btn-primary:hover,
+.about .cta-section .btn-primary:hover,
+.contact .submit-btn:hover {
+  background: var(--deep-green) !important;
+  border-color: var(--deep-green) !important;
+  box-shadow: 0 5px 14px rgba(6, 61, 34, 0.18);
+  transform: translateY(-1px);
+}
+
+.btn-outline-primary,
+.btn-outline-success,
+.about .cta-section .btn-outline {
+  color: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+  background: #ffffff;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-success:hover,
+.about .cta-section .btn-outline:hover {
+  background: var(--accent-color) !important;
+  color: #ffffff !important;
+}
+
+.card,
+.portfolio-card,
+.services .service-item,
+.contact .form-wrapper,
+.project-card {
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.card:hover,
+.portfolio-card:hover,
+.project-card:hover {
+  box-shadow: 0 8px 22px rgba(6, 61, 34, 0.1) !important;
+  transform: translateY(-3px);
+}
+
+.progress {
+  background: #e7eee9;
+  border-radius: 3px;
+}
+
+.progress-bar,
+.bg-success {
+  background-color: var(--secondary-color) !important;
+}
+
+.badge {
+  border-radius: var(--radius-sm) !important;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.form-control,
+.form-select,
+input,
+select,
+textarea {
+  min-height: 44px;
+  border: 1px solid #cbd8cf;
+  border-radius: var(--radius-sm);
+  color: var(--heading-color);
+}
+
+.form-control:focus,
+.form-select:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(46, 139, 69, 0.14);
+  outline: none;
+}
+
+.footer,
+.footer.accent-background {
+  background: var(--deep-green) !important;
+  color: #dce9df;
+  padding-bottom: 24px;
+}
+
+.footer .footer-top {
+  border-top: 0;
+  padding-top: 64px;
+}
+
+.footer h4,
+.footer .footer-about .logo span {
+  color: #ffffff;
+}
+
+.footer .footer-about p,
+.footer .footer-links ul a,
+.footer .footer-contact p {
+  color: #c6d8ca;
+}
+
+.footer .footer-links ul li {
+  padding: 7px 0;
+}
+
+.footer .footer-links ul a:hover,
+.footer a:hover {
+  color: #ffffff;
+}
+
+.footer .copyright {
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  background: transparent;
+  color: #c6d8ca;
+}
+
+.page-header {
+  background: var(--deep-green) !important;
+}
+
+@media (max-width: 1199px) {
+  .header .logo img {
+    max-height: 48px;
+  }
+
+  .navmenu ul {
+    border: 1px solid var(--border-color);
+  }
+}
+
+@media (max-width: 576px) {
+  section,
+  .section {
+    padding: 48px 0;
+  }
+
+  .hero .hero-content h1 {
+    font-size: 2.15rem;
+    line-height: 1.18;
+  }
+
+  .section-title {
+    padding-bottom: 36px;
+  }
+
+  .section-title h2 {
+    font-size: 2rem;
+  }
+
+  .footer .footer-top {
+    padding-top: 44px;
+  }
 }
 
 /* Contact Section */

@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Available Projects')
 
@@ -164,7 +164,7 @@
 
                                     {{-- Contributor --}}
                                     @if($project->can_sponsor)
-                                        <a href="{{ route('contributor.sponsor.form', $project) }}"
+                                        <a href="{{ route('contributor.project.form', $project) }}"
                                            class="btn btn-success btn-sm">
                                             <i class="fas fa-hand-holding-usd me-1"></i>
                                             Sponsor

@@ -304,7 +304,7 @@
                                 Approve
                             </button>
 
-                            <a href="{{ route('admin.applications.view-contractor', $application) }}"
+                            <a href="{{ route('contractors.show', $application->contractor) }}"
                                class="btn btn-info btn-sm"
                                data-bs-toggle="tooltip"
                                title="View Contractor Details">
@@ -682,3 +682,6 @@
 .application-card {
     animation: fadeInUp 0.5s ease forwards;
     opacity: 0;
+}
+</style>
+@endpush

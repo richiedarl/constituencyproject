@@ -33,7 +33,7 @@
                     <div class="profile-image-wrapper mx-auto mb-4 position-relative">
                         <div class="rounded-circle p-1 d-inline-block" style="border: 3px solid #29a221;">
                             <div class="rounded-circle overflow-hidden" style="width: 150px; height: 150px; border: 3px solid #ffc107;">
-                                <img src="{{ $contributor->photo ? asset('storage/'.$contributor->photo) : asset('images/avatar.png') }}"
+                                <img src="{{ $contributor->photo ? asset('storage/'.$contributor->photo) : asset('fe/assets/img/logo_current.webp') }}"
                                      alt="{{ $contributor->name }}"
                                      class="w-100 h-100"
                                      style="object-fit: cover;">
@@ -196,7 +196,7 @@
                                 <tr>
                                     <td>
                                         @if($donation->project)
-                                            <a href="{{ route('user.projects.show', $donation->project->slug) }}"
+                                            <a href="{{ route('project.public.show', $donation->project->slug) }}"
                                                class="text-decoration-none" style="color: #212529;">
                                                 {{ $donation->project->title }}
                                             </a>
@@ -241,7 +241,7 @@
                                         <i class="bi bi-building" style="color: #29a221;"></i>
                                     </div>
                                     <h5 class="mb-0">
-                                        <a href="{{ route('user.projects.show', $project->slug) }}"
+                                        <a href="{{ route('project.public.show', $project->slug) }}"
                                            class="text-decoration-none" style="color: #212529;">
                                             {{ $project->title }}
                                         </a>

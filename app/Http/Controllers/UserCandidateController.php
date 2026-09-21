@@ -21,6 +21,50 @@ use Illuminate\Support\Str;
 
 class UserCandidateController extends Controller
 {
+    public function dashboard()
+    {
+        $candidate = Candidate::where('user_id', Auth::id())
+            ->with('projects')
+            ->firstOrFail();
+        $applications = Application::where('candidate_id', $candidate->id)
+            ->with('project')
+            ->latest()
+            ->get();
+        $projects = $candidate->projects()->latest()->get();
+
+        return view('user.candidates.dashboard', compact('candidate', 'applications', 'projects'));
+    }
+
+    public function edit(Candidate $candidate)
+    {
+        $this->ensureOwner($candidate);
+
+        return view('user.candidates.edit', compact('candidate'));
+    }
+
+    public function update(Request $request, Candidate $candidate)
+    {
+        $this->ensureOwner($candidate);
+
+        $validated = $request->validate([
+            'phone' => ['required', 'string', 'max:20'],
+            'district' => ['required', 'string', 'max:100'],
+            'state' => ['required', 'string', 'max:100'],
+            'gender' => ['required', 'in:male,female,other'],
+            'bio' => ['nullable', 'string', 'max:1000'],
+            'photo' => ['nullable', 'image', 'max:2048'],
+        ]);
+
+        if ($request->hasFile('photo')) {
+            $validated['photo'] = $request->file('photo')->store('candidates', 'public');
+        }
+
+        $candidate->update($validated);
+
+        return redirect()->route('user.candidates.dashboard')
+            ->with('success', 'Candidate profile updated successfully.');
+    }
+
     /**
      * Show the application form for regular users
      */
@@ -102,7 +146,7 @@ public function store(Request $request)
     // Create candidate wallet if it doesn't exist
     Wallet::firstOrCreate(
         ['user_id' => $user->id],
-        ['balance' => 0, 'currency' => 'NGN']
+        ['candidate_id' => $candidate->id, 'balance' => 0, 'currency' => 'NGN']
     );
 
     // Create admin wallet if it doesn't exist
@@ -118,8 +162,7 @@ public function store(Request $request)
     // Create the Application if it doesn't already exist
     Application::firstOrCreate(
         ['candidate_id' => $candidate->id],
-        ['status' => Application::STATUS_PENDING],
-        ['paid' => true,]
+        ['status' => Application::STATUS_PENDING]
     );
 
     // Create CandidatePosition if not exists
@@ -199,14 +242,59 @@ public function storeProject(Request $request, Candidate $candidate)
     ]));
 
     // Create pending Application
-    $application = Application::create([
-        'candidate_id' => $candidate->id,
-        'project_id'   => $project->id,
-        'status'       => Application::STATUS_PENDING,
-    ]);
+    $application = Application::where('candidate_id', $candidate->id)
+        ->whereNull('project_id')
+        ->where('status', Application::STATUS_PENDING)
+        ->first();
+
+    if ($application) {
+        $application->update(['project_id' => $project->id]);
+    } else {
+        Application::firstOrCreate(
+            ['candidate_id' => $candidate->id, 'project_id' => $project->id],
+            ['status' => Application::STATUS_PENDING]
+        );
+    }
 
     return redirect()
         ->route('dashboard')
         ->with('success', 'Project created and pending admin approval.');
+}
+
+public function createPhase(Candidate $candidate, Project $project)
+{
+    $this->ensureProjectOwner($candidate, $project);
+
+    return view('user.candidates.projects.phases.create', compact('candidate', 'project'));
+}
+
+public function storePhase(Request $request, Candidate $candidate, Project $project)
+{
+    $this->ensureProjectOwner($candidate, $project);
+
+    $validated = $request->validate([
+        'phase' => ['required', 'string', 'max:100'],
+        'status' => ['nullable', 'string', 'max:255'],
+        'description' => ['nullable', 'string', 'max:1000'],
+        'weight' => ['required', 'integer', 'min:1', 'max:100'],
+        'started_at' => ['nullable', 'date'],
+        'ended_at' => ['nullable', 'date', 'after_or_equal:started_at'],
+    ]);
+
+    $project->phases()->create($validated);
+
+    return redirect()->route('user.candidates.dashboard')
+        ->with('success', 'Project phase added successfully.');
+}
+
+private function ensureOwner(Candidate $candidate): void
+{
+    abort_unless($candidate->user_id === Auth::id(), 403, 'Unauthorized');
+}
+
+private function ensureProjectOwner(Candidate $candidate, Project $project): void
+{
+    $this->ensureOwner($candidate);
+    abort_unless($project->candidate_id === $candidate->id, 404);
 }
 }

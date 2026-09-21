@@ -28,6 +28,9 @@ Route::middleware(['auth', 'admin'])->prefix('wallet')->group(function () {
     Route::post('/rejectWithdrawal', [AdminWalletController::class, 'rejectWithdrawal'])
     ->name('rejectWithdrawal');
 
+    Route::post('/approveWithdrawal', [AdminWalletController::class, 'approveWithdrawal'])
+    ->name('approveWithdrawal');
+
     });
 
 // Wallet Routes

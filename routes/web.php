@@ -6,10 +6,12 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,26 +22,31 @@ use App\Http\Controllers\RegisterController;
 Route::get('/', [IndexController::class, 'home'])->name('landing');
 
 Route::post('/register/store', [RegisterController::class, 'register'])->name('register.store');
+Route::post('/login-validate', [AuthenticatedSessionController::class, 'store'])
+    ->middleware('guest')
+    ->name('login_validate');
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/documentation', [PageController::class, 'documentation'])->name('documentation');
 Route::get('/services', [PageController::class, 'services'])->name('services');
 Route::get('/testimonials', [PageController::class, 'testimonials'])->name('testimonials');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::get('/admin/contact', [ContactController::class, 'all_contacts'])->name('admin.contacts.index');
+Route::middleware(['auth', 'admin'])->get('/admin/contact', [ContactController::class, 'adminIndex'])
+    ->name('admin.contacts.index');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/{notification}', [NotificationController::class, 'read'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+});
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.submit');
+Route::post('/contact/store', [ContactController::class, 'store'])->name('contact.store');
 
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'loginValidate'])->name('login_validate');
-Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
-
-Route::get('/register', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])->name('register');
-Route::post('/register', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'store']);
-
 /*
 |--------------------------------------------------------------------------
 | Dashboard (requires auth)
@@ -68,15 +75,6 @@ Route::get('/portfolios', [PortfolioController::class, 'index'])->name('portfoli
 
 
 
-Route::post('/login-validate', [LoginController::class, 'loginValidate'])
-    ->name('login_validate');
-
-Route::post('/logout', [LoginController::class, 'logout'])
-    ->middleware('auth')
-    ->name('logout');
-
-
-
 /*
 |--------------------------------------------------------------------------
 | Public Candidate Profiles (catch-all, must be LAST)
@@ -96,9 +94,7 @@ require __DIR__.'/projects.php';
 require __DIR__.'/contributors.php';
 require __DIR__.'/reports.php';
 require __DIR__.'/wallet.php';
+require __DIR__.'/auth.php';
 require __DIR__.'/profile.php';
 
 // Route::get('/{candidate:slug}', [CandidateController::class, 'show'])->name('candidate.show');
-
-
-require __DIR__.'/auth.php';

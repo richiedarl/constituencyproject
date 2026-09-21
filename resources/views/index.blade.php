@@ -4,8 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Index - Constituency Project</title>
-  <meta name="description" content="">
+  <title>Constituency Projects | Discover and track public development</title>
+  <meta name="description" content="Explore documented constituency development projects, progress updates, and public project records across Nigeria.">
   <meta name="color-scheme" content="light only">
   <meta name="keywords" content="">
 
@@ -34,16 +34,28 @@
   <header id="header" class="header d-flex align-items-center fixed-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
       <a href="/" class="logo d-flex align-items-center">
-        <img src="{{ asset('fe/assets/img/logo_current.webp')}}" alt="">
+        <img src="{{ asset('fe/assets/img/logo.png')}}" alt="">
       </a>
 
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="#hero" class="active">Home</a></li>
-          <li><a href="#about">About</a></li>
+          {{-- <li><a href="#about">About</a></li> --}}
+          <!-- Dropdown Menu -->
+          <li class="dropdown">
+            <a href="#">
+              <span>Informa</span>
+              <i class="bi bi-chevron-down toggle-dropdown"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="{{ route('about') }}">About Us</a></li>
+              <li><a href="{{ route('documentation') }}">Documentation</a></li>
+              <li><a href="{{ route('services') }}">Services</a></li>
+            </ul>
+          </li>
           <li><a href="#personalities">Personalities</a></li>
-          <li><a href="#portfolio">Portfolios</a></li>
-          <li><a href="#team">Team</a></li>
+          <li><a href="#top-projects">Projects</a></li>
+          <li><a href="/login">My Account</a></li>
 
           <!-- Dropdown Menu -->
           <li class="dropdown">
@@ -54,11 +66,11 @@
             <ul class="dropdown-menu">
               <li><a href="{{ route('contractor.register') }}">Become A Contractor</a></li>
               <li><a href="{{ route('contributor.apply') }}">Become A Contributor</a></li>
-              <li><a href="/contributors-leaderboard">Contributor's Leaderboard</a></li>
+              <li><a href="#leaderboard">Contributor's Leaderboard</a></li>
               <li><a href="{{ route('user.candidates.create') }}">Apply As A Candidate</a></li>
             </ul>
           </li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="/contact">Contact</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
@@ -73,18 +85,16 @@
         <div class="row align-items-center">
           <div class="col-lg-6">
             <div class="hero-content">
-              <h1 data-aos="fade-up" data-aos-delay="200">The Inevitable Question Every Leader Must Answer</h1>
-              <p data-aos="fade-up" data-aos-delay="300">What did you do when you were there? Constituency Project transforms promises into verifiable projects, measurable impact, and a legacy that speaks for itself.</p>
+              <h1 data-aos="fade-up" data-aos-delay="200">Find the public projects shaping your constituency</h1>
+              <p data-aos="fade-up" data-aos-delay="300">Constituency Projects brings project records, locations, progress, and available evidence into one place for citizens, journalists, researchers, and development partners.</p>
               <div class="hero-cta" data-aos="fade-up" data-aos-delay="400">
-                <a href="#portfolio" class="btn-primary">Show Your Legacy</a>
-                <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="btn-secondary glightbox">
-                  <i class="bi bi-play-circle"></i> Watch Impact
-                </a>
+                <a href="{{ route('projects.index') }}" class="btn-primary">Explore projects</a>
+                <a href="#about" class="btn-secondary">How it works <i class="bi bi-arrow-down"></i></a>
               </div>
               <div class="hero-stats" data-aos="fade-up" data-aos-delay="500">
-                <div class="stat-item"><div class="stat-number">300+</div><div class="stat-label">Projects Delivered</div></div>
-                <div class="stat-item"><div class="stat-number">1M+</div><div class="stat-label">Lives Impacted</div></div>
-                <div class="stat-item"><div class="stat-number">15+</div><div class="stat-label">States Covered</div></div>
+                <div class="stat-item"><div class="stat-number">{{ $projects->total() }}</div><div class="stat-label">Public projects listed</div></div>
+                <div class="stat-item"><div class="stat-number">{{ $featuredPortfolios->count() }}</div><div class="stat-label">Public profiles</div></div>
+                <div class="stat-item"><div class="stat-number">Open</div><div class="stat-label">Project records to explore</div></div>
               </div>
             </div>
           </div>
@@ -92,8 +102,8 @@
             <div class="hero-image" data-aos="fade-left" data-aos-delay="300" data-aos-duration="900">
               <img src="{{ asset('fe/assets/img/about/community-led.jpg') }}" alt="Community Project Execution" class="img-fluid hero-img-hover">
               <div class="floating-card" data-aos="zoom-in" data-aos-delay="600">
-                <div class="card-icon"><i class="bi bi-check-circle-fill"></i></div>
-                <div class="card-content"><h5>Verified Impact</h5><div class="growth-percentage">100%</div></div>
+                <div class="card-icon"><i class="bi bi-journal-check"></i></div>
+                <div class="card-content"><h5>Project records</h5><div class="growth-percentage">Open</div></div>
               </div>
             </div>
           </div>
@@ -114,8 +124,8 @@
             <div class="content">
               <h2>From Promises to Proven Impact</h2>
               <p class="lead">We plan, execute, document, and amplify structural and capacity-building projects across Nigeria with transparency and accountability.</p>
-              <p>Our work bridges the gap between delivery and perception—ensuring that every school, borehole, training programme, or intervention becomes documented evidence of service.</p>
-              <p>Through technology-driven monitoring, media amplification, and ethical governance, we help leaders build trust and leave behind a legacy that endures.</p>
+              <p>Our work bridges the gap between delivery and public understanding by bringing project descriptions, progress, media, and updates together in a clear record.</p>
+              <p>Where evidence or project information is available, it is presented so communities and researchers can examine the record rather than rely on slogans.</p>
               <div class="stats-row">
                 <div class="stat-item"><div class="stat-number purecounter" data-purecounter-start="0" data-purecounter-end="10" data-purecounter-duration="1"></div><div class="stat-label">Years Experience</div></div>
                 <div class="stat-item"><div class="stat-number purecounter" data-purecounter-start="0" data-purecounter-end="300" data-purecounter-duration="1"></div><div class="stat-label">Projects Executed</div></div>
@@ -130,7 +140,7 @@
               <div class="floating-card" data-aos="zoom-in" data-aos-delay="500">
                 <div class="card-content">
                   <div class="icon"><i class="bi bi-shield-check"></i></div>
-                  <div class="text"><h4>Transparency & Trust</h4><p>Every project documented. Every impact verified.</p></div>
+                  <div class="text"><h4>Evidence and context</h4><p>Project details are organised for public review.</p></div>
                 </div>
               </div>
             </div>
@@ -145,21 +155,23 @@
       <div class="container section-title" data-aos="fade-up">
         <span class="subtitle">Featured Opportunities</span>
         <h2>Top Active Projects</h2>
-        <p>Explore verified public projects. Support them financially as a donor or apply as a contractor to execute and deliver impact.</p>
+        <p>Explore public project records, review their progress, and inspect the information available for each one.</p>
       </div>
       <div class="container">
         <div class="row gy-4">
           @foreach($projects as $project)
             <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="100">
               <div class="card shadow-sm border-0 h-100 project-card">
-                <img src="{{ asset('storage/'.$project->featured_image) }}" class="card-img-top" style="height:220px; object-fit:cover;">
+                <img src="{{ $project->featured_image ? asset('storage/'.$project->featured_image) : asset('fe/assets/img/about/community-led.jpg') }}" class="card-img-top" style="height:220px; object-fit:cover;" alt="{{ $project->title }}">
                 <div class="card-body d-flex flex-column">
                   <h5 class="card-title mb-2">{{ $project->title }}</h5>
                   <small class="text-muted mb-2">{{ $project->full_location }}</small>
                   <div class="progress mb-3" style="height:6px;"><div class="progress-bar {{ $project->progress_bar_class }}" style="width: {{ $project->progress_percentage }}%"></div></div>
                   <div class="mt-auto d-flex justify-content-between flex-wrap gap-2">
-                    <a href="{{ route('user.projects.show', $project->slug) }}" class="btn btn-sm btn-outline-primary animated-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="View Project Info"><i class="bi bi-eye"></i></a>
-                    <a href="{{ route('candidates.show', $project->candidate->slug) }}" class="btn btn-sm btn-outline-dark animated-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="View Candidate Info"><i class="bi bi-person"></i></a>
+                    <a href="{{ route('project.public.show', $project->slug) }}" class="btn btn-sm btn-outline-primary animated-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="View Project Info"><i class="bi bi-eye"></i></a>
+                    @if($project->candidate)
+                      <a href="{{ route('candidate.public.show', $project->candidate->slug) }}" class="btn btn-sm btn-outline-dark animated-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="View Candidate Info"><i class="bi bi-person"></i></a>
+                    @endif
                     @if($project->is_active)
                       <a href="{{ route('contributor.project.apply', $project->id) }}" class="btn btn-sm btn-success animated-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Contribute To Project"><i class="bi bi-cash-coin"></i></a>
                       <a href="{{ route('contractor.projects.form', $project->id) }}" class="btn btn-sm btn-warning animated-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Become A Contractor"><i class="bi bi-tools"></i></a>
@@ -173,7 +185,7 @@
       </div>
     </section>
     @endif
-
+@if($topContributors->count() > 0)
     <!-- Leaderboard Section -->
     <section id="leaderboard" class="leaderboard section py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
       <div class="container">
@@ -191,7 +203,7 @@
               $totalDonated = $contributor->donations_sum_amount ?? $contributor->totalDonated() ?? 0;
               $rank = $index + 1;
               $contributorName = $contributor->name ?? $contributor->user->name ?? 'Anonymous Citizen';
-              $photoUrl = $contributor->photo ? asset('storage/' . $contributor->photo) : asset('images/contributor-placeholder.jpg');
+              $photoUrl = $contributor->photo ? asset('storage/' . $contributor->photo) : asset('fe/assets/img/logo_current.webp');
             @endphp
 
             <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ $index * 50 }}">
@@ -205,7 +217,7 @@
                 <div class="card-body text-center p-4 pt-5">
                   <div class="position-relative d-inline-block mb-4">
                     <div class="rounded-circle overflow-hidden border-3 shadow-sm" style="width: 120px; height: 120px; border: 3px solid {{ $rank == 1 ? '#ffc107' : ($rank == 2 ? '#29a221' : '#e9ecef') }}; margin: 0 auto;">
-                      <img src="{{ $photoUrl }}" alt="{{ $contributorName }}" class="w-100 h-100" style="object-fit: cover;" loading="lazy" onerror="this.src='{{ asset('images/avatar.png') }}'">
+                      <img src="{{ $photoUrl }}" alt="{{ $contributorName }}" class="w-100 h-100" style="object-fit: cover;" loading="lazy" onerror="this.src='{{ asset('fe/assets/img/logo_current.webp') }}'">
                     </div>
                     @if($rank == 1)
                       <div class="position-absolute top-0 end-0" style="transform: translate(10px, -10px);">
@@ -259,7 +271,7 @@
         </div>
       </div>
     </section>
-
+@endif
     <!-- Personalities Section -->
     <section id="personalities" class="portfolio section py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
       <div class="container section-title text-center mb-5" data-aos="fade-up">
@@ -300,12 +312,12 @@
                   <div class="row g-0">
                     <div class="col-md-5">
                       <div class="project-visual position-relative h-100">
-                        <img src="{{ $candidate->photo ? asset('storage/'.$candidate->photo) : asset('fe/assets/img/person/default.jpg') }}" alt="{{ $candidate->name }}" class="img-fluid w-100 h-100" style="object-fit: cover; min-height: 350px;" loading="lazy">
+                        <img src="{{ $candidate->photo_url }}" alt="{{ $candidate->name }}" class="img-fluid w-100 h-100" style="object-fit: cover; min-height: 350px;" loading="lazy">
                         <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, rgba(41, 162, 33, 0.3) 0%, rgba(255, 193, 7, 0.3) 100%);"></div>
                         <div class="position-absolute top-0 end-0 m-4"><span class="badge px-4 py-2 rounded-pill shadow" style="background: #ffc107; color: #212529; font-weight: 500;"><i class="bi bi-file-text me-1"></i> Report Available</span></div>
                         <div class="project-overlay position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
                           <div class="overlay-content d-flex gap-2">
-                            <a href="{{ $candidate->photo ? asset('storage/'.$candidate->photo) : asset('fe/assets/img/person/default.jpg') }}" class="btn btn-sm rounded-circle glightbox" style="background: #29a221; color: white; width: 45px; height: 45px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-eye"></i></a>
+                            <a href="{{ $candidate->photo_url }}" class="btn btn-sm rounded-circle glightbox" style="background: #29a221; color: white; width: 45px; height: 45px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-eye"></i></a>
                             <a href="{{ route('candidate.report.preview', $candidate->slug ?? $candidate->id) }}" class="btn btn-sm rounded-circle" style="background: #ffc107; color: #212529; width: 45px; height: 45px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-file-text"></i></a>
                             <a href="{{ route('candidate.public.show', $candidate->slug ?? $candidate->id) }}" class="btn btn-sm rounded-circle" style="background: white; color: #29a221; width: 45px; height: 45px; display: inline-flex; align-items: center; justify-content: center;"><i class="bi bi-arrow-up-right"></i></a>
                           </div>
@@ -377,7 +389,7 @@
             <div class="col-lg-4 col-md-6">
               <a href="{{ route('candidate.report.preview', $portfolio->slug) }}" class="portfolio-card d-block bg-white rounded-4 shadow-lg overflow-hidden text-decoration-none" data-aos="fade-up" style="transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 20px 30px rgba(41,162,33,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.05)';">
                 <div class="position-relative" style="height: 250px; overflow: hidden;">
-                  <img src="{{ $portfolio->photo ? asset('storage/'.$portfolio->photo) : asset('fe/assets/img/person/default.jpg') }}" alt="{{ $portfolio->name }}" class="w-100 h-100" style="object-fit: cover; transition: all 0.5s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                  <img src="{{ $portfolio->photo ? asset('storage/'.$portfolio->photo) : asset('fe/assets/img/logo_current.webp') }}" alt="{{ $portfolio->name }}" class="w-100 h-100" style="object-fit: cover; transition: all 0.5s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                   <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);"></div>
                   <div class="position-absolute top-0 start-0 w-100 p-4 d-flex justify-content-between">
                     <span class="badge px-4 py-2 rounded-pill" style="background: #29a221; color: white;"><i class="bi bi-patch-check-fill me-1"></i> Verified Portfolio</span>
@@ -414,7 +426,7 @@
       </div>
       <div class="container">
         <div class="row gy-5">
-          <div class="col-lg-4 col-md-6"><div class="service-item"><div class="service-icon"><i class="bi bi-search"></i></div><h3>Verified Public Projects</h3><p>Explore active and completed projects with documented phases, media evidence, budgets, and timelines.</p></div></div>
+          <div class="col-lg-4 col-md-6"><div class="service-item"><div class="service-icon"><i class="bi bi-search"></i></div><h3>Public Project Records</h3><p>Explore active and completed projects with documented phases, media evidence, budgets, and timelines.</p></div></div>
           <div class="col-lg-4 col-md-6"><div class="service-item"><div class="service-icon"><i class="bi bi-cash-stack"></i></div><h3>Community Funding</h3><p>Become a contributor and financially support projects you believe in. Every donation is tracked and transparent.</p></div></div>
           <div class="col-lg-4 col-md-6"><div class="service-item"><div class="service-icon"><i class="bi bi-hammer"></i></div><h3>Contract Opportunities</h3><p>Skilled contractors can apply to execute verified projects. All applications are reviewed and approved by project owners.</p></div></div>
           <div class="col-lg-4 col-md-6"><div class="service-item"><div class="service-icon"><i class="bi bi-bar-chart-line"></i></div><h3>Real-Time Progress Tracking</h3><p>Track phase-by-phase execution, completion percentages, and project health indicators.</p></div></div>
@@ -487,7 +499,7 @@
     <div class="container footer-top py-5">
       <div class="row gy-4">
         <div class="col-lg-5 col-md-12 footer-about">
-          <a href="index.html" class="logo d-flex align-items-center mb-3"><span class="sitename" style="color: var(--accent-color); font-weight: 600;">constituencyproject</span></a>
+          <a href="{{ route('landing') }}" class="logo d-flex align-items-center mb-3"><span class="sitename" style="color: var(--accent-color); font-weight: 600;">constituencyproject</span></a>
           <p style="color: color-mix(in srgb, var(--contrast-color), transparent 70%);">Constituency Project is a public-impact platform dedicated to making constituency projects visible, verifiable, and preserved as a lasting legacy.</p>
           <div class="social-links d-flex mt-4 gap-3">
             <a href="#" class="social-icon" style="border-color: var(--secondary-color); color: var(--secondary-color);"><i class="bi bi-twitter-x"></i></a>

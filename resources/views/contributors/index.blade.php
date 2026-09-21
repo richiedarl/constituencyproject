@@ -22,7 +22,7 @@
                             <!-- Rank -->
                             <div class="position-relative">
                                 <div class="rounded-circle mx-auto mb-3 overflow-hidden border-3" style="width: 100px; height: 100px; border: 3px solid {{ $index < 3 ? ($index == 0 ? '#ffc107' : ($index == 1 ? '#29a221' : '#cd7f32')) : '#e9ecef' }};">
-                                    <img src="{{ $contributor->photo ? asset('storage/'.$contributor->photo) : asset('images/avatar.png') }}"
+                                    <img src="{{ $contributor->photo ? asset('storage/'.$contributor->photo) : asset('fe/assets/img/logo_current.webp') }}"
                                          class="w-100 h-100" style="object-fit: cover;">
                                 </div>
                                 @if($index < 3)

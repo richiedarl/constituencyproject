@@ -17,12 +17,15 @@ class UserSeeder extends Seeder
     public function run()
     {
         //
-        User::create([
-            'name' => 'Admin',
-            'admin' => 1,
-            'email' => 'admin@constituencyproject.org',
-            'username' => 'admin',
-            'password' => Hash::make('password')
-        ]);
+        $user = User::firstOrCreate(
+            ['email' => 'admin@constituencyproject.org'],
+            [
+                'name' => 'Admin',
+                'username' => 'admin',
+                'password' => Hash::make('password'),
+            ]
+        );
+
+        $user->forceFill(['admin' => true, 'role' => 'admin'])->save();
     }
 }

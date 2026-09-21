@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use App\Models\CandidatePosition;
 
 class Candidate extends Model
@@ -99,6 +101,32 @@ class Candidate extends Model
     public function applications(): HasMany
     {
         return $this->hasMany(Application::class);
+    }
+
+    public function wallet(): HasOne
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function getPhotoUrlAttribute(): string
+    {
+        if (! $this->photo) {
+            return asset('fe/assets/img/logo_current.webp');
+        }
+
+        if (Str::startsWith($this->photo, ['http://', 'https://'])) {
+            return $this->photo;
+        }
+
+        if (Str::startsWith($this->photo, 'fe/') && is_file(public_path($this->photo))) {
+            return asset($this->photo);
+        }
+
+        if (Storage::disk('public')->exists($this->photo)) {
+            return asset('storage/'.$this->photo);
+        }
+
+        return asset('fe/assets/img/logo_current.webp');
     }
 
     // Helper methods

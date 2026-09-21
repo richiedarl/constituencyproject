@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -l app/Http/Controllers/PortfolioController.php)",
+      "Bash(composer dump-autoload *)",
+      "Bash(grep -E \"projects\\\\.index|project\\\\.public\\\\.show|landing|contact$|candidates\\\\.index\")",
+      "Bash(grep -rhoE \"^\\\\s*use App\\\\\\\\\\\\\\\\Http\\\\\\\\\\\\\\\\Controllers\\\\\\\\\\\\\\\\[A-Za-z]+;|\\(\\\\[?[A-Z][A-Za-z]+Controller::class\\)\" routes/)",
+      "Read(//tmp/**)"
+    ]
+  }
+}

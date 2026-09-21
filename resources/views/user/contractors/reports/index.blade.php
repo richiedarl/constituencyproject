@@ -105,7 +105,7 @@
         <div class="card-body">
             @forelse($recentUpdates as $update)
                 <div class="border-bottom pb-2 mb-2">
-                    <small class="text-primary">{{ $update->phase->project->title }} - {{ $update->phase->name }}</small>
+                    <small class="text-primary">{{ $update->phase?->project?->title ?? 'Project' }} - {{ ucfirst($update->phase?->phase ?? 'Phase') }}</small>
                     <p class="mb-0 small">{{ Str::limit($update->comment, 60) }}</p>
                     <small class="text-muted">{{ $update->created_at->diffForHumans() }}</small>
                 </div>

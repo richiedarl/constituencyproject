@@ -17,11 +17,6 @@ use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * Show the profile edit form
      */
@@ -62,13 +57,16 @@ class ProfileController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'username' => 'sometimes|nullable|string|max:255|unique:users,username,' . $user->id,
         ]);
 
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'username' => $request->username,
+            'username' => $request->input('username', $user->username),
+            'email_verified_at' => $request->email !== $user->email
+                ? null
+                : $user->email_verified_at,
         ]);
 
         // Update password if provided
@@ -83,7 +81,7 @@ class ProfileController extends Controller
             ]);
         }
 
-        return back()->with('success', 'Profile updated successfully.');
+        return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
     }
 
     /**
@@ -140,7 +138,7 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request)
     {
-        $request->validate([
+        $request->validateWithBag('userDeletion', [
             'password' => 'required|current_password',
         ]);
 

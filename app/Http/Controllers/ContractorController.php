@@ -12,6 +12,8 @@ use Illuminate\Validation\Rule;
 use App\Models\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use App\Notifications\AccountNotification;
 use Illuminate\Support\Str;
 
 class ContractorController extends Controller
@@ -55,6 +57,12 @@ class ContractorController extends Controller
      */
     public function showApplyFormForProject(Project $project)
     {
+        $user = auth()->user();
+
+    // Only plain users can become contractors
+    if ($user->candidate || $user->contributor || $user->admin) {
+        abort(403, 'You are not allowed to register as a contractor. Contact Admin to request change of position.');
+    }
         // Check if project is accepting applications
         if (!in_array($project->status, ['planning', 'ongoing'])) {
             return redirect()->back()
@@ -229,10 +237,19 @@ class ContractorController extends Controller
     {
         try {
             $contractor->update([
+                'approved' => true,
                 'verified' => true,
+                'suspended' => false,
                 'verified_at' => now(),
                 'verified_by' => Auth::id()
             ]);
+
+            $contractor->user?->notify(new AccountNotification(
+                'Contractor profile verified',
+                'Your contractor profile is verified. You may now apply for eligible projects.',
+                route('projects.index'),
+                'success'
+            ));
 
             return response()->json([
                 'success' => true,
@@ -283,7 +300,9 @@ class ContractorController extends Controller
                 return redirect()->route('login')->with('error', 'Please login first.');
             }
 
-            if (!$user->contractor) {
+            $contractor = Contractor::where('user_id', $user->id)->first();
+
+            if (!$contractor) {
                 return redirect()->route('contractor.register')
                     ->with('error', 'Please register as a contractor first.');
             }
@@ -292,7 +311,7 @@ class ContractorController extends Controller
             $approvedApplications = Application::with(['project' => function($query) {
                     $query->with(['phases.media', 'candidate']);
                 }])
-                ->where('contractor_id', $user->contractor->id)
+                ->where('contractor_id', $contractor->id)
                 ->where('status', 'approved')
                 ->get();
 
@@ -312,8 +331,7 @@ class ContractorController extends Controller
  */
 public function showProject(Project $project)
 {
-    try {
-        $user = Auth::user();
+    $user = Auth::user();
 
         if (!$user || !$user->contractor) {
             abort(403, 'Access denied.');
@@ -338,11 +356,7 @@ public function showProject(Project $project)
             ->sortByDesc('started_at')
             ->first();
 
-        return view('user.contractors.projects.show', compact('project', 'latestPhase'));
-    } catch (\Exception $e) {
-        \Log::error('Error loading project for contractor: ' . $e->getMessage());
-        return back()->with('error', 'Unable to load project details.');
-    }
+    return view('user.contractors.projects.show', compact('project', 'latestPhase'));
 }
 
     /**
@@ -350,6 +364,12 @@ public function showProject(Project $project)
      */
     public function showApplyForm(Project $project = null)
     {
+        $user = auth()->user();
+
+    // Only plain users can become contractors
+    if ($user->candidate || $user->contributor || $user->admin) {
+        abort(403, 'You are not allowed to register as a contractor. Contact Admin to request change of position.');
+    }
         try {
             $user = auth()->user();
             $skills = Skill::all();
@@ -358,6 +378,10 @@ public function showProject(Project $project)
 
             if ($user) {
                 $contractor = Contractor::where('user_id', $user->id)->first();
+
+                if ($contractor && ! $project) {
+                    return redirect()->route('contractor.profile');
+                }
 
                 if ($contractor && $project) {
                     $alreadyApplied = Application::where('project_id', $project->id)
@@ -390,7 +414,7 @@ public function showProject(Project $project)
             }
 
             if ($user->contractor) {
-                return redirect()->route('project.index')
+                return redirect()->route('projects.index')
                     ->with('info', 'You are already registered as a contractor.');
             }
 
@@ -416,9 +440,9 @@ public function showProject(Project $project)
         $contractor = Contractor::where('user_id', Auth::id())->firstOrFail();
 
         $validated = $request->validate([
-            'phone' => 'sometimes|string|max:20',
-            'district' => 'sometimes|string|max:100',
-            'occupation' => 'sometimes|string|max:100',
+            'phone' => 'nullable|string|max:20',
+            'district' => 'nullable|string|max:100',
+            'occupation' => 'nullable|string|max:100',
             'skills' => 'sometimes|array',
             'skills.*' => 'string',
             'photo' => 'nullable|image|max:2048',
@@ -426,6 +450,9 @@ public function showProject(Project $project)
         ]);
 
         if ($request->hasFile('photo')) {
+            if ($contractor->photo) {
+                Storage::disk('public')->delete($contractor->photo);
+            }
             $validated['photo'] = $request->file('photo')->store('contractors', 'public');
         }
 
@@ -475,9 +502,10 @@ public function showProject(Project $project)
                 'occupation' => $validated['specialization'],
                 'district' => $validated['district'] ?? null,
                 'slug' => $slug,
-                'photo' => $photoPath,
+                'photo' => $photoPath ?? optional($user->contractor)->photo,
             ]
         );
+        $user->forceFill(['role' => 'contractor'])->save();
 
         // Ensure wallet exists (clean + safe)
         $this->walletService->ensureWalletExists($user->id);
@@ -489,10 +517,7 @@ public function showProject(Project $project)
 
         // Optional: Apply to project
         if (!empty($validated['project_id'])) {
-            return $this->handleProjectApplication(
-                $validated['project_id'],
-                $contractor
-            );
+            return $this->handleProjectApplication($validated['project_id'], $contractor);
         }
 
         return redirect()
@@ -623,26 +648,37 @@ public function showProject(Project $project)
     /**
      * Handle project application
      */
-    private function handleProjectApplication(Request $request, $contractor, $message)
+    private function handleProjectApplication(int $projectId, Contractor $contractor)
     {
-        $alreadyApplied = Application::where('project_id', $request->project_id)
+        if (! $contractor->approved || ! $contractor->verified || $contractor->suspended) {
+            $project = Project::findOrFail($projectId);
+
+            return redirect()->route('project.public.show', $project->slug)
+                ->with('info', 'Your contractor profile must be verified before you can apply.');
+        }
+
+        $alreadyApplied = Application::where('project_id', $projectId)
             ->where('contractor_id', $contractor->id)
             ->exists();
 
         if (!$alreadyApplied) {
             Application::create([
-                'project_id' => $request->project_id,
+                'project_id' => $projectId,
                 'contractor_id' => $contractor->id,
                 'status' => 'pending'
             ]);
 
+            $project = Project::findOrFail($projectId);
+
             return redirect()
-                ->route('user.projects.show', $request->project_id)
+                ->route('project.public.show', $project->slug)
                 ->with('success', 'Application submitted successfully.');
         }
 
+        $project = Project::findOrFail($projectId);
+
         return redirect()
-            ->route('user.projects.show', $request->project_id)
+            ->route('project.public.show', $project->slug)
             ->with('info', 'You have already applied to this project.');
     }
 }
